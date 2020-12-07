@@ -21,3 +21,4 @@ typing-extensions==3.7.4.3
 win32-setctime==1.0.3
 wrapt==1.12.1
 yarl==1.6.3
+youtube-dl==2020.12.7
