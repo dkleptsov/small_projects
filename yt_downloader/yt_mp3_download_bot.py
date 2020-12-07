@@ -1,13 +1,17 @@
 import os
+import sys
 from aiogram import Bot, Dispatcher, executor, types
 import time
 from loguru import logger
 import gc
+import youtube_dl
 
 BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_API_KEY")
 START_MSG = "This bot downloads mp3 from youtube videos"
 LOGS_PATH = r"logs/yt_mp3_download.log"
-
+PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
+        'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3',
+        'preferredquality': '192',}]}
 
 @logger.catch
 def main():
@@ -22,7 +26,11 @@ def main():
     @dp.message_handler()
     async def sum_message(message: types.Message):
         start = time.time()
-        # Input magic here
+        video_info = youtube_dl.YoutubeDL().extract_info(url=message["text"], download=False)
+        PARAMS['outtmpl'] = f"music/{video_info['title']}.mp3"
+
+        with youtube_dl.YoutubeDL(PARAMS) as ydl:
+            ydl.download([video_info['webpage_url']])
         response_time = f"{time.time() - start:.3f}"
         await message.answer(f"Response time: {response_time} sec")
         log_entry = f"\nMessage from: {message['from']['username']} \nResponse time: {response_time} sec"

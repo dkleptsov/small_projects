@@ -127,6 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# My part
 yt_downloader/.vscode/settings.json
 yt_downloader/linter.txt
 yt_downloader/linter_modules_list.txt
+yt_downloader/music/
+*.mp3
