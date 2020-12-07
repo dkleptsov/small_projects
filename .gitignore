@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 yt_downloader/.vscode/settings.json
+yt_downloader/linter.txt
+yt_downloader/linter_modules_list.txt
