@@ -134,3 +134,4 @@ yt_downloader/music/
 yt_downloader/logs/
 *.mp3
 photo_organiser/.vscode/
+gui_experiments/.vscode/settings.json
