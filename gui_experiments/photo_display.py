@@ -9,42 +9,70 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from pathlib import Path
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(324, 232)
+        MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(-4, 10, 331, 131))
-        self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("../img/plane.jpg"))
-        self.label.setScaledContents(True)
-        self.label.setObjectName("label")
-        self.NEXT = QtWidgets.QPushButton(self.centralwidget)
-        self.NEXT.setGeometry(QtCore.QRect(250, 150, 75, 23))
-        self.NEXT.setObjectName("NEXT")
-        self.path = QtWidgets.QLineEdit(self.centralwidget)
-        self.path.setGeometry(QtCore.QRect(0, 150, 113, 21))
-        self.path.setObjectName("path")
+        self.Photo = QtWidgets.QLabel(self.centralwidget)
+        self.Photo.setGeometry(QtCore.QRect(0, 0, 801, 371))
+        self.Photo.setText("")
+        self.Photo.setPixmap(QtGui.QPixmap("../img/plane.jpg"))
+        self.Photo.setScaledContents(True)
+        self.Photo.setObjectName("Photo")
+        self.pushButton1 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton1.setGeometry(QtCore.QRect(560, 370, 241, 91))
+        self.pushButton1.setObjectName("pushButton1")
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setGeometry(QtCore.QRect(0, 410, 561, 20))
+        self.lineEdit.setObjectName("lineEdit")
+        self.pushButton2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton2.setGeometry(QtCore.QRect(564, 462, 231, 81))
+        self.pushButton2.setObjectName("pushButton2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 324, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.pushButton1.clicked.connect(self.change_pic)
+        self.pushButton2.clicked.connect(self.change_back)
+
+        for path in Path(r'C:/Users/59850/Pictures/Saved Pictures/').glob('**/*'):
+            self.Photo.setPixmap(QtGui.QPixmap(str(path)))
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.NEXT.setText(_translate("MainWindow", "PushButton"))
+        self.pushButton.setText(_translate("MainWindow", "PushButton"))
+
+    def new_photo_generator(self):
+        SOURCE_FOLDER = r'G:/SORTED/'
+        # Itterate through subfolders and files in folder
+        paths = Path(SOURCE_FOLDER).glob('**/*')
+        for path in paths:
+            print(path)
+            yield str(path)
+    
+    
+    def get_new_photo(self):
+        next(self.new_photo_generator())
+        return next(self.new_photo_generator())
+
+
+    def change_pic(self):
+        self.Photo.setPixmap(QtGui.QPixmap(self.get_new_photo()))
+
+    def change_back(self):
+        self.Photo.setPixmap(QtGui.QPixmap("../img/plane.jpg"))
 
 
 if __name__ == "__main__":

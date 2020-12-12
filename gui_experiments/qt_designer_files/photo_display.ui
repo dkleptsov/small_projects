@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>324</width>
-    <height>232</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="Photo">
     <property name="geometry">
      <rect>
-      <x>-4</x>
-      <y>10</y>
-      <width>331</width>
-      <height>131</height>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>371</height>
      </rect>
     </property>
     <property name="text">
@@ -33,27 +33,40 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="NEXT">
+   <widget class="QPushButton" name="pushButton1">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>150</y>
-      <width>75</width>
-      <height>23</height>
+      <x>560</x>
+      <y>370</y>
+      <width>241</width>
+      <height>91</height>
      </rect>
     </property>
     <property name="text">
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="path">
+   <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>150</y>
-      <width>113</width>
-      <height>21</height>
+      <y>410</y>
+      <width>561</width>
+      <height>20</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton2">
+    <property name="geometry">
+     <rect>
+      <x>564</x>
+      <y>462</y>
+      <width>231</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
     </property>
    </widget>
   </widget>
@@ -62,7 +75,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>324</width>
+     <width>800</width>
      <height>22</height>
     </rect>
    </property>
