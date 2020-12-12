@@ -135,3 +135,4 @@ yt_downloader/logs/
 *.mp3
 photo_organiser/.vscode/
 gui_experiments/.vscode/settings.json
+gui_experiments/img/plane.jpg
