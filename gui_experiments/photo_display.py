@@ -45,9 +45,6 @@ class Ui_MainWindow(object):
         self.pushButton1.clicked.connect(self.change_pic)
         self.pushButton2.clicked.connect(self.change_back)
 
-        for path in Path(r'C:/Users/59850/Pictures/Saved Pictures/').glob('**/*'):
-            self.Photo.setPixmap(QtGui.QPixmap(str(path)))
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
