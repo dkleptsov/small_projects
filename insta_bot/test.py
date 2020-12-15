@@ -1,17 +1,14 @@
-from time import sleep
-from selenium import webdriver
+from instapy import InstaPy
+import os
 
-browser = webdriver.Firefox()
-browser.implicitly_wait(5)
-
-browser.get('https://www.instagram.com/')
-
-login_link = browser.find_element_by_xpath("//a[text()='Log in']")
-login_link.click()
-
-sleep(100)
-
-browser.close()
-
-# you_know_me_right_7
-# bus
+session = InstaPy(username="you_know_me_right_7", password=os.getenv("YT_MP3_DOWNLOAD_BOT_API_KEY"))
+# session = InstaPy(username='test', password='test', headless_browser=True)
+session.login()
+session.set_quota_supervisor(enabled=True, peak_comments_daily=240, peak_comments_hourly=21)
+# session.set_relationship_bounds(enabled=True, max_followers=8500)
+session.like_by_tags(["bmw", "mercedes"], amount=5)
+session.set_dont_like(["naked", "nsfw"])
+#session.set_do_follow(True, percentage=50)
+session.set_do_comment(True, percentage=100)
+session.set_comments(["Nice!", "Sweet!", "Beautiful :heart_eyes:"])
+session.end()
