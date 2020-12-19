@@ -25,6 +25,7 @@ def main():
 
     @dp.message_handler()
     async def sum_message(message: types.Message):
+        await message.answer("Your message recieved, wait for an answer.")
         # Download, save, encode and send
         start = time.time()
         video_info = youtube_dl.YoutubeDL().extract_info(url=message["text"], download=False)
