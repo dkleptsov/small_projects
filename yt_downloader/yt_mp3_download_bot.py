@@ -6,9 +6,13 @@ from loguru import logger
 import gc
 import youtube_dl
 
+# Modify before flight
+LOGS_PATH = r"D:/small_projects/yt_downloader/logs/yt_mp3_download.log"
+MUSIC_PATH = r"D:/small_projects/yt_downloader/music/"
+
+BAD_PATH_CHARS = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
 BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_API_KEY")
 START_MSG = "This bot downloads mp3 from youtube videos"
-LOGS_PATH = r"logs/yt_mp3_download.log"
 PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
         'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3',
         'preferredquality': '192',}]}
@@ -29,10 +33,11 @@ def main():
         # Download, save, encode and send
         start = time.time()
         video_info = youtube_dl.YoutubeDL().extract_info(url=message["text"], download=False)
-        PARAMS['outtmpl'] = f"music/{video_info['title']}.mp3"
+        video_info['title'] = ''.join(i for i in video_info['title'] if not i in BAD_PATH_CHARS)
+        PARAMS['outtmpl'] = f"{MUSIC_PATH}{video_info['title']}.mp3"
         with youtube_dl.YoutubeDL(PARAMS) as ydl:
             ydl.download([video_info['webpage_url']])
-        await bot.send_audio(message['from']['id'], audio=open(f"music/{video_info['title']}.mp3", 'rb'))
+        await bot.send_audio(message['from']['id'], audio=open(PARAMS['outtmpl'], 'rb'))
         response_time = f"{time.time() - start:.3f}"
         await message.answer(f"Response time: {response_time} sec")
 
