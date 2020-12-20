@@ -1,6 +1,3 @@
-"""
-This bot is created for the demonstration of a usage of regular keyboards.
-"""
 import os
 import logging
 
@@ -21,11 +18,11 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands='start')
 async def start_cmd_handler(message: types.Message):
-    keyboard_markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     # default row_width is 3, so here we can omit it actually
     # kept for clearness
 
-    btns_text = ('🐲', '🐉')
+    btns_text = ('🐲', '🐉', 'ggg')
     keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
     # adds buttons as a new row to the existing keyboard
     # the behaviour doesn't depend on row_width attribute
