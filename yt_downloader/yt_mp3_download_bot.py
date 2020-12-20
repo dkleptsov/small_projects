@@ -8,11 +8,11 @@ import youtube_dl
 
 # Modify before flight
 LOGS_PATH = r"D:/small_projects/yt_downloader/logs/yt_mp3_download.log"
-MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"  #C:\Users\59850\OneDrive\Media\NEW MUSIC\yt_bot
+MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"
 
-BAD_PATH_CHARS = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
 BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_TOKEN")
 START_MSG = "This bot downloads mp3 from youtube videos"
+BAD_PATH_CHARS = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
 PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
         'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3',
         'preferredquality': '192',}]}
@@ -23,13 +23,25 @@ def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(bot)
 
+    keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btns_text = ('💡 How this bot works', '🤓 Contact us')
+    keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
+
     @dp.message_handler(commands=['start'])
     async def start_message(message: types.Message):
-        await message.reply(START_MSG)
+        await message.reply(START_MSG, reply_markup=keyboard_markup)
 
     @dp.message_handler()
     async def sum_message(message: types.Message):
-        await message.answer("Your message recieved, wait for an answer.")
+        if message["text"] == '💡 How this bot works':
+            await message.answer(START_MSG, reply_markup=keyboard_markup)
+        elif message["text"] == '🤓 Contact us':
+            await message.answer('This bot created by @real_den', reply_markup=keyboard_markup)
+        elif not (message["text"].startswith('https://www.youtube.com/') or message["text"].startswith('https://youtu.be/') or message["text"].startswith('youtu.be/') or message["text"].startswith('youtube.com/')):
+            await message.answer('Please enter valid Youtube link. For example: https://www.youtube.com/watch?v=XyNlqQId-nk', reply_markup=keyboard_markup)
+        else:
+            await message.answer("Your message has been received. Please wait for an answer.", reply_markup=keyboard_markup)
+
         # Download, save, encode and send
         start = time.time()
         video_info = youtube_dl.YoutubeDL().extract_info(url=message["text"], download=False)
