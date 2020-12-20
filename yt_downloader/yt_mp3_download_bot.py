@@ -8,10 +8,10 @@ import youtube_dl
 
 # Modify before flight
 LOGS_PATH = r"D:/small_projects/yt_downloader/logs/yt_mp3_download.log"
-MUSIC_PATH = r"D:/small_projects/yt_downloader/music/"
+MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"  #C:\Users\59850\OneDrive\Media\NEW MUSIC\yt_bot
 
 BAD_PATH_CHARS = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
-BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_API_KEY")
+BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_TOKEN")
 START_MSG = "This bot downloads mp3 from youtube videos"
 PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
         'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3',
