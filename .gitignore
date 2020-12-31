@@ -139,3 +139,7 @@ gui_experiments/img/plane.jpg
 insta_bot/.vscode/settings.json
 audio_recording/.vscode/settings.json
 test_tg_bot/.vscode/settings.json
+lip_sync/Wav2Lip/temp/result.avi
+lip_sync/Wav2Lip/results/result_voice.mp4
+*.pth
+lip_sync/Wav2Lip/input/sinatra.wav
