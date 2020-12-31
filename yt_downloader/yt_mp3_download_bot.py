@@ -54,9 +54,13 @@ def main():
         await message.answer(f"Response time: {response_time} sec")
 
         # Logging
-        log_entry = f"\nMessage from: {message['from']['id']} \nResponse time: {response_time} sec"
+        log_entry = f"\nMessage from: {message['from']['id']} \nTitle: {video_info['title']} \nResponse time: {response_time} sec"
         logger.info(log_entry)
         await bot.send_message(91675683, log_entry)
+
+        # Deleting unwanted music 91675683
+        if message['from']['id'] != 91675683 and os.path.exists(f"{MUSIC_PATH}{video_info['title']}.mp3"):
+            os.remove(f"{MUSIC_PATH}{video_info['title']}.mp3")
 
         # Garbage collection
         gc.collect()

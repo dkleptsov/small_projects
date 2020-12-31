@@ -1,0 +1,1 @@
+python inference.py --checkpoint_path "checkpoints\wav2lip_gan.pth" --face "input\kira.jpg" --audio "input\sinatra.wav"
