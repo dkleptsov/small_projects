@@ -144,3 +144,6 @@ lip_sync/Wav2Lip/results/result_voice.mp4
 *.pth
 lip_sync/Wav2Lip/input/sinatra.wav
 gans/coursera/1_basic/.vscode/settings.json
+file_organiser/.vscode/settings.json
+file_organiser/new_onedrive.csv
+*/.vscode/*.json

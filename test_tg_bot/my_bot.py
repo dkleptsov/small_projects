@@ -1,6 +1,8 @@
 import os
 # import sys
 from aiogram import Bot, Dispatcher, executor, types
+import keyboards as kb
+
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 BOT_TOKEN = os.getenv("ABS_SUM_BOT_TOKEN")
