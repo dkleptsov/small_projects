@@ -19,7 +19,7 @@ def main():
                 mixer.music.play()
                 while mixer.music.get_busy():
                     print(path)
-                    print('Copy this music to selected?:')
+                    print('Copy this music to selected? :')
                     action = input()
                     if action == 'y':
                         copyfile(path, DESTINATION_FOLDER + ntpath.basename(path))

@@ -45,13 +45,17 @@ def main():
         # Download, save, encode and send
         start = time.time()
         video_info = youtube_dl.YoutubeDL().extract_info(url=message["text"], download=False)
-        video_info['title'] = ''.join(i for i in video_info['title'] if not i in BAD_PATH_CHARS)
-        PARAMS['outtmpl'] = f"{MUSIC_PATH}{video_info['title']}.mp3"
-        with youtube_dl.YoutubeDL(PARAMS) as ydl:
-            ydl.download([video_info['webpage_url']])
-        await bot.send_audio(message['from']['id'], audio=open(PARAMS['outtmpl'], 'rb'))
-        response_time = f"{time.time() - start:.3f}"
-        await message.answer(f"Response time: {response_time} sec")
+        if video_info['duration'] > 600 and message['from']['id'] != 91675683:
+            await message.answer("Song is longer than 10 minutes. Please contact @real_den", reply_markup=keyboard_markup)
+            response_time = 0
+        else:
+            video_info['title'] = ''.join(i for i in video_info['title'] if not i in BAD_PATH_CHARS)
+            PARAMS['outtmpl'] = f"{MUSIC_PATH}{video_info['title']}.mp3"
+            with youtube_dl.YoutubeDL(PARAMS) as ydl:
+                ydl.download([video_info['webpage_url']])
+            await bot.send_audio(message['from']['id'], audio=open(PARAMS['outtmpl'], 'rb'))
+            response_time = f"{time.time() - start:.3f}"
+            await message.answer(f"Response time: {response_time} sec")
 
         # Logging
         log_entry = f"\nMessage from: {message['from']['id']} \nTitle: {video_info['title']} \nResponse time: {response_time} sec"
