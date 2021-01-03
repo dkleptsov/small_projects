@@ -3,6 +3,7 @@ import ntpath
 from pathlib import Path
 from tqdm import tqdm
 import csv
+import pandas as pd
 # import os
 # from shutil import copyfile
 
@@ -17,6 +18,7 @@ def get_hash(file_path):
 
 
 def make_files_db(folder: str, db_name: str):
+    # Create database of files in folder
     paths = Path(folder).glob('**/*')
     f = open(db_name, 'w')
     with f:
@@ -32,19 +34,25 @@ def make_files_db(folder: str, db_name: str):
                 print(e)
                 print(path)
     f.close()
-    # Find another way to calculate
-    # print(f"New Onedrive contains {counter} files!")
 
 
 def main():
+    # Define our constants
     SOURCE_FOLDER = r'D:/OneDriv/'
     DESTINATION_FOLDER = r'D:/OneDrive/'
     # SECOND_BATCH = r'D:/not_copied/'
 
-    make_files_db(DESTINATION_FOLDER, 'new_onedrive.csv')
-    make_files_db(SOURCE_FOLDER, 'old_onedrive.csv')
+    # Step 1. Create data bases of available files:
+    # make_files_db(DESTINATION_FOLDER, 'new_onedrive.csv')
+    # make_files_db(SOURCE_FOLDER, 'old_onedrive.csv')
 
-    # # Detect files that are not in new OneDrive
+    # Step 2. Delete dublicate files
+    new_onedrive = pd.read_csv('new_onedrive.csv', encoding='cp1251')
+    old_onedrive = pd.read_csv('old_onedrive.csv', encoding='cp1251')
+
+    print(new_onedrive)
+    print(old_onedrive)
+
     # counter = 0
     # f = open("file_list.txt", "a")
     # paths = Path(SOURCE_FOLDER).glob('**/*')
