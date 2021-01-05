@@ -1,0 +1,7 @@
+To run on Windows 10:
+pip install numpy==1.19.3
+
+Add this VS code settings to disable misleading warnings: 
+"python.linting.pylintArgs": [
+    "--generated-members=numpy.* ,torch.*", "--errors-only"
+]
