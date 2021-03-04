@@ -2,19 +2,20 @@ import re
 import csv
 
 
-def check_nko(text_to_check:str, patterns_db="patterns_db.csv"):
+def check_nko(text_to_check:str, mode="normal", patterns_db="patterns_db.csv"):
+    # ! Возвращать детектированную часть с нормальной капитализацией (re.IGNORECASE или нарезать оригинальный текст)
     # Детектирование форм одного слова
     # Детектирование словосочетаний
     # Детектирование нескольких словосочетаний одним паттерном
-    
+    lowered_text = text_to_check.lower()
     with open(patterns_db) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=';')
         for row in csv_reader:
-            compiled = re.compile(r'{}'.format(row[0]))
-            matches = compiled.finditer(text_to_check)
+            compiled = re.compile(r'{}'.format(row[1], re.IGNORECASE))
+            matches = compiled.finditer(lowered_text)
             for match in matches:
-                result = {"span":list(match.span()), "text_found":match.group(), 
-                          "info": row[1] + row[2] + row[3] + row[4] + row[5]}
+                result = {"span":list(match.span()), "text_found": match.group(),  # text_to_check[int(match.span()[0]), int(match.span()[1])], 
+                          "info": row[2] + row[3] + row[4] + row[5] + row[6]}
                 print(result)
         
 
