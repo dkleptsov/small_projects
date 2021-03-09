@@ -30,7 +30,7 @@ def re_check(text_to_check:str, pattern:str, name:str, inoagent_type:str, org_ty
         yield result
 
 
-def check_inoagent(text_to_check:str, extended=False, patterns_db="patterns_db.csv", verbose=False):
+def check_inoagent(text_to_check:str, extended=False, patterns_db="patterns_db_utf.csv", verbose=False):
     """
     Функция, которая ищет в тексте упоминание всех организаций из списка.
     Для самого процесса поиска вызывает функцию re_check.
@@ -45,12 +45,11 @@ def check_inoagent(text_to_check:str, extended=False, patterns_db="patterns_db.c
         results: Возвращает все найденные совпадения в формате dictionary.
     """
         
-    with open(patterns_db) as csv_file:
+    with open(patterns_db, encoding="utf-8") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=';')
         num_results = 0
         results = {}
         for row in csv_reader:
-            print(row[1])
             if extended:
                 for result in re_check(text_to_check, row[0], row[2], row[3], row[4], row[5], row[6], verbose):
                     results[num_results] = result
@@ -69,16 +68,15 @@ def check_lenta(file_path):
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
             try:
-                print(row[2])
+                check_inoagent(row[2], verbose=True)
             except Exception as e:
-                print(e)
+                pass
             # check_inoagent(row[2], verbose=True)
 
 
 def main():
     LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent.csv'
-    # check_lenta(LENTA_PATH)
-    check_inoagent("XXX")
+    check_lenta(LENTA_PATH)
 
 
 
@@ -90,18 +88,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-##### TO DO ######
-# ! Сокращенная и ласкательная форма имен Люда и т.д. Решение: сократить до части, которая не меняется Люд
-# ! Надо ли ставить знак ? перед несколькими регулярками https://www.regular-expressions.info/brackets.html
-# Детектирование организаций
-# Придумать паттерны для extended режима
-
-# Очистка текста от мусора? (удалять все не буквы? А как возвращать результаты? Есть ли цифры?)
-# Проверка на нулевые значения
-# Загружать тест для проверки из файла
-# Развертывание на линуксе (батник для линукса)
-# Написать тесты
-# Статик метод?
-# Веб сервис
-# Очищение от веб-тегов
