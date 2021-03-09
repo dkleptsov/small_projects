@@ -2,7 +2,7 @@ import re
 import csv
 
 
-def re_check(text_to_check:str, pattern:str, name:str, inoagent_type:str, org_type:str, date:str, excluded:str, verbose:bool):
+def check_single_pattern(text_to_check:str, pattern:str, name:str, inoagent_type:str, org_type:str, date:str, excluded:str, verbose:bool):
     """
     Функция, ищет в тексте упоминание отдельной организации.
 
@@ -30,10 +30,10 @@ def re_check(text_to_check:str, pattern:str, name:str, inoagent_type:str, org_ty
         yield result
 
 
-def check_inoagent(text_to_check:str, extended=False, patterns_db="patterns_db_utf.csv", verbose=False):
+def check_all_patterns(text_to_check:str, extended=False, patterns_db="patterns_db.csv", verbose=False):
     """
     Функция, которая ищет в тексте упоминание всех организаций из списка.
-    Для самого процесса поиска вызывает функцию re_check.
+    Для самого процесса поиска вызывает функцию check_single_pattern.
 
     Args:
         text_to_check (str): Текст, который надо проверить, очищенный от тегов.
@@ -51,40 +51,22 @@ def check_inoagent(text_to_check:str, extended=False, patterns_db="patterns_db_u
         results = {}
         for row in csv_reader:
             if extended:
-                for result in re_check(text_to_check, row[0], row[2], row[3], row[4], row[5], row[6], verbose):
+                for result in check_single_pattern(text_to_check, row[0], row[2], row[3], row[4], row[5], row[6], verbose):
                     results[num_results] = result
                     num_results += 1
             else:
-                for result in re_check(text_to_check, row[1], row[2], row[3], row[4], row[5], row[6], verbose):
+                for result in check_single_pattern(text_to_check, row[1], row[2], row[3], row[4], row[5], row[6], verbose):
                     results[num_results] = result
                     num_results += 1
-    if verbose and len(results) > 0:
+    if verbose:
         print('Total number of results: {}'.format(len(results)))
     return results
-
-
-def check_lenta(file_path):
-    with open(file_path, encoding="utf-8") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            try:
-                check_inoagent(row[2], verbose=True)
-            except Exception as e:
-                pass
-            # check_inoagent(row[2], verbose=True)
-
+                 
 
 def main():
-    LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent.csv'
-    check_lenta(LENTA_PATH)
-
-
-
-
-    # with open("text_to_search.txt", "r", encoding="utf-8") as text_file:
-    #     check_inoagent(text_file.read(), verbose=True)
+    with open("text_to_search.txt", "r", encoding="utf-8") as text_file:
+        check_all_patterns(text_file.read(), verbose=True)
 
 
 if __name__ == "__main__":
     main()
-
