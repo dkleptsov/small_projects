@@ -12,6 +12,7 @@ import subprocess
 import random
 import time
 #from loguru import logger
+import pyforest
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -234,11 +235,11 @@ def print_df(df):
 
 
 def main():
-    MAIN_CSV_PATH="lenta_recent.csv"
+    MAIN_CSV_PATH="D:/OneDrive/data/lenta_check/lenta_latest.csv"
 
     # Шаг 1 Скачивание новостей, добавление их в основной файл и удаление дублей
     # Перезапустить, если не успешно
-    news_downloader(MAIN_CSV_PATH, "10.07.2020")
+    news_downloader(MAIN_CSV_PATH, "08.03.2021")
 
 
 if __name__ == "__main__":
