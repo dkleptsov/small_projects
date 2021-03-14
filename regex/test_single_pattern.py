@@ -1,6 +1,7 @@
 import re
 import csv
 import pyforest
+from datetime import datetime
 
 
 def check_single_pattern(text_to_check:str, pattern:str, name="pass", inoagent_type="pass",
@@ -29,7 +30,8 @@ def check_single_pattern(text_to_check:str, pattern:str, name="pass", inoagent_t
                   "inoagent_type": inoagent_type, "org_type": org_type, "date": date, "excluded": excluded}
         if verbose:
             print(result["text_found"], result["name"])
-            with open("log.txt", "a", encoding="utf-8") as log:
+            now_string = datetime.now().strftime("%d_%m_%Y_%H_%M")
+            with open("logs/log_{}.txt".format(now_string), "w+", encoding="utf-8") as log:
                 log.write(result["text_found"] + " " + result["name"] + "\n")
             
         yield result
@@ -171,9 +173,10 @@ def main():
     # LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent_reversed.csv'
     # check_lenta(LENTA_PATH)
 
-    for i in range(1,93):
-        test_single_pattern(i)
+    # for i in range(1,93):
+    #     test_single_pattern(i) 
     
+    test_single_pattern(94)
     
 if __name__ == "__main__":
     main()
