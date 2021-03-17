@@ -2,6 +2,7 @@ import re
 import csv
 import pyforest
 from datetime import datetime
+import time
 
 
 def check_single_pattern(text_to_check:str, pattern:str, name="pass", inoagent_type="pass",
@@ -22,8 +23,7 @@ def check_single_pattern(text_to_check:str, pattern:str, name="pass", inoagent_t
     Yields:
         result: Возвращает найденные совпадения по одному в формате dictionary.
     """    
-    
-    compiled = re.compile(r'{}'.format(pattern), re.IGNORECASE)
+    compiled = re.compile(r'{}'.format(pattern), re.IGNORECASE) # Протестировать работу
     matches = compiled.finditer(text_to_check)
     for match in matches:
         result = {"span":list(match.span()), "text_found": match.group(), "name": name,
@@ -144,7 +144,7 @@ def test_single_pattern(number_to_test:int, patterns_db="patterns_db.csv",
     
     with open(patterns_db, encoding="utf-8") as csv_file:
         pattern = list(csv.reader(csv_file, delimiter=';'))[number_to_test]
-        print("Название иноагента: {}".format(pattern[2]))
+        print("\nНазвание иноагента: {}".format(pattern[2]))
         if extended:
             pattern_to_test = pattern[0]
             print("Тестирование расширенного режима")
@@ -173,10 +173,12 @@ def main():
     # LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent_reversed.csv'
     # check_lenta(LENTA_PATH)
 
-    # for i in range(1,93):
-    #     test_single_pattern(i) 
+    for i in range(12,94):
+        print("\ni = {}".format(i))
+        test_single_pattern(i)
+        time.sleep(1)
     
-    test_single_pattern(94)
+    # test_single_pattern(7, extended = False)
     
 if __name__ == "__main__":
     main()
