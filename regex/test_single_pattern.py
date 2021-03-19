@@ -173,8 +173,8 @@ def main():
     # LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent_reversed.csv'
     # check_lenta(LENTA_PATH)
 
-    for i in range(12,94):
-        print("\ni = {}".format(i))
+    for i in range(90,94):
+        print("\n************\ni = {}, номер строки = {}".format(i, i+1))
         test_single_pattern(i)
         time.sleep(1)
     
