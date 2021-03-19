@@ -6,7 +6,7 @@ from loguru import logger
 from test_pattern import check_all_patterns
 import gc
 
-LOGS_PATH = r"/logs/inoagent_bot.log"
+LOGS_PATH = r"logs/inoagent_bot.log"
 BOT_TOKEN = os.getenv("INOAGENT_BOT")
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
 которые признаны иностранными агентами в Российской Федерации. 🕵️"
