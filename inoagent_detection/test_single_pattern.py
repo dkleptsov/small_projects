@@ -30,8 +30,8 @@ def check_single_pattern(text_to_check:str, pattern:str, name="pass", inoagent_t
                   "inoagent_type": inoagent_type, "org_type": org_type, "date": date, "excluded": excluded}
         if verbose:
             print(result["text_found"], result["name"])
-            now_string = datetime.now().strftime("%d_%m_%Y_%H_%M")
-            with open("logs/log_{}.txt".format(now_string), "w+", encoding="utf-8") as log:
+            now_string = datetime.now().strftime("%d_%m_%Y_%H")
+            with open("logs/log_{}.txt".format(now_string), "a", encoding="utf-8") as log:
                 log.write(result["text_found"] + " " + result["name"] + "\n")
             
         yield result
@@ -172,11 +172,14 @@ def main():
     
     # LENTA_PATH = 'D:/OneDrive/data/lenta_check/lenta_recent_reversed.csv'
     # check_lenta(LENTA_PATH)
-
-    for i in range(90,94):
+    
+    start = time.time()
+    for i in range(93,94):
         print("\n************\ni = {}, номер строки = {}".format(i, i+1))
         test_single_pattern(i)
-        time.sleep(1)
+        time.sleep(20)
+    
+    print("Проверка заняла: {0:.2f} секунд".format(time.time() - start))
     
     # test_single_pattern(7, extended = False)
     
