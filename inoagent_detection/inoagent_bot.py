@@ -39,7 +39,8 @@ def main():
             await message.answer(AWAIT_MSG, reply_markup=keyboard_markup)
 
         start = time.time()
-        results = check_all_patterns(message["text"])
+        results = check_all_patterns(message["text"], 
+        patterns_db=r"D:/small_projects/inoagent_detection/patterns_db.csv")
         if len(results) > 0:
             for i in range(len(results)):
                 await message.answer(
