@@ -9,7 +9,7 @@ import youtube_dl
 LOGS_PATH = r"D:/small_projects/yt_downloader/logs/yt_mp3_download.log"
 MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"
 
-BOT_TOKEN = os.getenv("REAL_DEN_BOT") #"YT_MP3_DOWNLOAD_BOT_TOKEN")
+BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_TOKEN")
 START_MSG = "This bot downloads mp3 from youtube videos. 🤩"
 AWAIT_MSG = "Your message has been received. Please wait for an answer. 🤗"
 
