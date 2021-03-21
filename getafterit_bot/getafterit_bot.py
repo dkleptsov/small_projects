@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import time
 from loguru import logger
 import gc
-import schedule
+# import schedule
 
 LOGS_PATH = r"logs/getafterit_bot.log"
 BOT_TOKEN = os.getenv("TEST_FLIGHT_BOT") #"GETAFTERIT_BOT")
