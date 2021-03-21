@@ -7,7 +7,7 @@ import gc
 # import schedule
 
 LOGS_PATH = r"logs/getafterit_bot.log"
-BOT_TOKEN = os.getenv("GETAFTERIT_BOT")
+BOT_TOKEN = os.getenv("TEST_FLIGHT_BOT") #"GETAFTERIT_BOT")
 PRIVATE_MSG = "This bot is private."
 
 
