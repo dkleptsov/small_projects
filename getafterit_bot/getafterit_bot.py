@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import time
 from loguru import logger
 import gc
+import schedule
 
 LOGS_PATH = r"logs/getafterit_bot.log"
 BOT_TOKEN = os.getenv("GETAFTERIT_BOT")
@@ -16,28 +17,38 @@ def main():
             , serialize=True)
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(bot)
-
-    # keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # btns_text = ('💡 Как это работает', '🤓 Контакты')
-    # keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-
-    @dp.message_handler(commands=['start'])
-    async def start_message(message: types.Message):
-        await message.reply(PRIVATE_MSG)
+    
+    keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btns_text = ('Done!', 'Failed!')
+    keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
+    
 
     @dp.message_handler()
-    async def sum_message(message: types.Message):
+    async def all_messages(message: types.Message):
         if message['from']['id'] != 91675683:
             await message.answer(PRIVATE_MSG)
+            
+        elif message["text"][:5] == 'Plan:':
+            PLAN = message['text'][5:]
+            with open("plan.txt", "w") as f:
+                f.write(PLAN)
+            await message.answer(f"Your plan is:{PLAN}")
+            
+        elif message["text"][:6] == 'Done!':
+            with open("plan.txt") as f:
+                PLAN  = f.read()
+            await message.answer(f"You successfully done:\n{PLAN}")
+        
+        elif message["text"][:6] == 'Failed!':
+            with open("plan.txt") as f:
+                PLAN  = f.read()
+            await message.answer(f"You failed:\n{PLAN}")
+        
         else:
-            await message.answer("Hello!")            
+            await message.answer("Valid commands are:\
+                \nPlan: your plan\nDone!\nFailed!")
+
         # await bot.send_message(91675683, "XXX")
-
-    @dp.message_handler(commands=['reminder'])
-    async def process_start_command(message: types.Message):
-        await bot.send_message(91675683, "test message")
-
-
     
     logger.info("Get after it bot started!")
     try:
