@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import time
 from loguru import logger
 import gc
-import schedule
+# import schedule
 
 LOGS_PATH = r"logs/getafterit_bot.log"
 BOT_TOKEN = os.getenv("GETAFTERIT_BOT")
@@ -39,7 +39,7 @@ def main():
                 PLAN  = f.read()
             await message.answer(f"You successfully done:\n{PLAN}")
         
-        elif message["text"][:6] == 'Failed!':
+        elif message["text"][:7] == 'Failed!':
             with open("plan.txt") as f:
                 PLAN  = f.read()
             await message.answer(f"You failed:\n{PLAN}")
