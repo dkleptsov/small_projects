@@ -12,7 +12,7 @@ from ugc.models import Message
 from ugc.models import Profile
 
 
-BOT_TOKEN = os.getenv("TEST_FLIGHT_BOT")
+BOT_TOKEN = os.getenv("YT_MP3_DOWNLOAD_BOT_TOKEN")
 LOGS_PATH = r"D:/small_projects/yt_downloader/logs/yt_mp3_download.log"
 MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"
 START_MSG = "This bot downloads mp3 from youtube videos. 🤩"
