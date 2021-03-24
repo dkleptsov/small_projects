@@ -28,8 +28,8 @@ PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
 def save_to_db(user_id, user_name, user_message):
     db_id, _ = Profile.objects.get_or_create(external_id=user_id,
     defaults={'name': user_name,})
-    m = Message(profile = db_id, text = user_message,)
-    m.save()
+    message_entry = Message(profile = db_id, text = user_message,)
+    message_entry.save()
     d_count = Message.objects.filter(profile=db_id).count()
     print (d_count)
     return d_count
