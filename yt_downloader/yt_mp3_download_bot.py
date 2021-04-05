@@ -20,7 +20,7 @@ PARAMS = {'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': 'filename',
 
 @logger.catch
 def main():
-    logger.add(LOGS_PATH, format="{time} {level} {message}", 
+    logger.add(LOGS_PATH, format="{time} {level} {message}",
                retention="14 days", serialize=True)
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(bot)
@@ -38,14 +38,14 @@ def main():
         if message["text"] == '💡 How this bot works':
             await message.answer(START_MSG, reply_markup=keyboard_markup)
         elif message["text"] == '🤓 Contact us':
-            await message.answer('This bot created by @real_den', 
+            await message.answer('This bot created by @real_den',
                                  reply_markup=keyboard_markup)
-        elif not (message["text"].startswith('https://www.youtube.com/') 
-                  or message["text"].startswith('https://youtu.be/') 
-                  or message["text"].startswith('youtu.be/') 
+        elif not (message["text"].startswith('https://www.youtube.com/')
+                  or message["text"].startswith('https://youtu.be/')
+                  or message["text"].startswith('youtu.be/')
                   or message["text"].startswith('youtube.com/')):
             await message.answer('Please enter valid Youtube link. For example:\
-                https://www.youtube.com/watch?v=NUYvbT6vTPs', 
+                https://www.youtube.com/watch?v=NUYvbT6vTPs',
                 reply_markup=keyboard_markup)
         else:
             await message.answer(AWAIT_MSG, reply_markup=keyboard_markup)
@@ -59,12 +59,12 @@ def main():
                     Please contact @real_den", reply_markup=keyboard_markup)
                 response_time = 0
             else:
-                video_info['title']= ''.join(i for i in video_info['title'][:99] 
+                video_info['title']= ''.join(i for i in video_info['title'][:99]
                                               if not i in BAD_PATH_CHARS)
                 PARAMS['outtmpl'] = f"{MUSIC_PATH}{video_info['title']}.mp3"
                 with youtube_dl.YoutubeDL(PARAMS) as ydl:
                     ydl.download([video_info['webpage_url']])
-                await bot.send_audio(message['from']['id'], 
+                await bot.send_audio(message['from']['id'],
                                      audio=open(PARAMS['outtmpl'], 'rb'))
                 response_time = f"{time.time() - start:.3f}"
                 await message.answer(f"Response time: {response_time} sec")
@@ -97,4 +97,5 @@ if __name__ == '__main__':
     main()
 
 
-# Docs:
+# TODO:
+# Перенести все if про текст в отдельные функции
