@@ -8,7 +8,9 @@ from loguru import logger
 from test_pattern import check_all_patterns
 import gc
 
-LOGS_PATH = r"logs/inoagent_bot.log"
+LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
+PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
+#r"D:/small_projects/inoagent_detection/patterns_db.csv")
 ADMIN_NICK = "real_den"
 BOT_TOKEN = os.getenv("INOAGENT_BOT") #os.getenv("TESTFLIGHT_BOT") #
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
@@ -27,18 +29,17 @@ btns_text = ('💡 Как это работает', '🤓 Контакты')
 keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
-async def set_commands(bot: Bot):
-    commands = [
-        BotCommand(command="/start", description="Запустить бота."),
-        BotCommand(command="/help", description="Свяжитесь с нами."),
-    ]
-    await bot.set_my_commands(commands)
-
-
 @logger.catch
 def main():
     logger.add(LOGS_PATH, format="{time} {level} {message}", retention="14 days"
-               , serialize=True)
+              , serialize=True)
+
+    async def set_commands(bot: Bot):
+        commands = [
+            BotCommand(command="/start", description="Запустить бота."),
+            BotCommand(command="/help", description="Свяжитесь с нами."),
+                    ]
+        await bot.set_my_commands(commands)
 
     @dp.message_handler(commands=['start'])
     async def start_message(message: types.Message):
@@ -61,8 +62,7 @@ def main():
         await message.answer(AWAIT_MSG, reply_markup=keyboard_markup)
         start = time.time()
         results = check_all_patterns(message["text"], 
-        patterns_db=r"/home/small_projects/inoagent_detection/patterns_db.csv")
-        #r"D:/small_projects/inoagent_detection/patterns_db.csv")
+        patterns_db=PATTERN_DB)
         if len(results) > 0:
             for i in range(len(results)):
                 await message.answer(
