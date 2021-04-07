@@ -89,7 +89,7 @@ def main():
     
     @dp.message_handler(content_types=ContentType.ANY)
     async def unknown_content(message: types.Message):
-        await message.reply(UNKN_CONTENT)
+        await message.answer(UNKN_CONTENT)
 
     logger.info("Inoagent bot started!")
     try:
