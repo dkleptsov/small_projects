@@ -2,17 +2,23 @@
 import os
 import sys
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import BotCommand
 from aiogram.types.message import ContentType
 import time
 from loguru import logger
 from test_pattern import check_all_patterns
 import gc
 
-LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
-PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
-#r"D:/small_projects/inoagent_detection/patterns_db.csv")
+if sys.platform == "win32":
+    BOT_TOKEN = os.getenv("TESTFLIGHT_BOT")
+    LOGS_PATH = r"D:/repos/small_projects/inoagent_detection/logs/inoagent_bot.log"
+    PATTERN_DB =r"D:/repos/small_projects/inoagent_detection/patterns_db.csv"
+else:
+    BOT_TOKEN = os.getenv("INOAGENT_BOT")
+    LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
+    PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
+
 ADMIN_NICK = "real_den"
-BOT_TOKEN = os.getenv("INOAGENT_BOT") #os.getenv("TESTFLIGHT_BOT") #
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
 которые признаны иностранными агентами в Российской Федерации. 🕵️"
 CONTACTS_MSG = f"По всем вопросам пишите @{ADMIN_NICK}"
@@ -29,25 +35,26 @@ btns_text = ('💡 Как это работает', '🤓 Контакты')
 keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
+async def set_commands(bot: Bot):
+    commands = [
+        BotCommand(command="/start", description="Запустить бота."),
+        BotCommand(command="/help", description="Свяжитесь с нами."),
+                ]
+    await bot.set_my_commands(commands)
+
+
 @logger.catch
 def main():
     logger.add(LOGS_PATH, format="{time} {level} {message}", retention="14 days"
               , serialize=True)
 
-    async def set_commands(bot: Bot):
-        commands = [
-            BotCommand(command="/start", description="Запустить бота."),
-            BotCommand(command="/help", description="Свяжитесь с нами."),
-                    ]
-        await bot.set_my_commands(commands)
-
     @dp.message_handler(commands=['start'])
     async def start_message(message: types.Message):
-        await message.reply(START_MSG, reply_markup=keyboard_markup)
+        await message.answer(START_MSG, reply_markup=keyboard_markup)
     
     @dp.message_handler(commands=['help'])
-    async def start_message(message: types.Message):
-        await message.reply(CONTACTS_MSG, reply_markup=keyboard_markup)
+    async def help_message(message: types.Message):
+        await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")
     async def how_it_works(message: types.Message):
@@ -58,7 +65,8 @@ def main():
         await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
 
     @dp.message_handler()
-    async def sum_message(message: types.Message):
+    async def all_messages(message: types.Message):
+        await set_commands(bot)
         await message.answer(AWAIT_MSG, reply_markup=keyboard_markup)
         start = time.time()
         results = check_all_patterns(message["text"], 
@@ -66,11 +74,12 @@ def main():
         if len(results) > 0:
             for i in range(len(results)):
                 await message.answer(
-                    f"Мы нашли текст: {results[i]['text_found']}\
-                    \nНазвание иноагента: {results[i]['name']}\
-                    \nТип иноагента: {results[i]['inoagent_type']}\
-                    \nПравовая форма иноагента: {results[i]['org_type']}\
-                    \nДата включения в реестр: {results[i]['date']}")
+                f"Мы нашли текст: {results[i]['text_found']}\
+                \nНазвание иноагента: {results[i]['name']}\
+                \nТип иноагента: {results[i]['inoagent_type']}\
+                \nПравовая форма иноагента: {results[i]['org_type']}\
+                \nДата включения в реестр: {results[i]['date']}\
+                \nИсключен ли иноагент из реестра: {results[i]['excluded']}")
             await message.answer(
                 f"Время обработки: {time.time() - start:.3f} секунд")
         else:
@@ -78,7 +87,8 @@ def main():
             f"\nВремя обработки: {time.time() - start:.3f} секунд")
 
         # Logging
-        log_entry = f"\nMessage from: {message['from']['id']}\
+        log_entry = f"\nFrom id: {message['from']['id']}\
+                      \nFrom nick: {message['from']['username']}\
                       \nText: {message['text']}\
                       \nNumber of detected inoagents: {len(results)}"
         logger.info(log_entry)
