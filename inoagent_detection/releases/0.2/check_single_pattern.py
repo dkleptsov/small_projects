@@ -132,7 +132,7 @@ def reverse_df(original:str, reversed:str):
     df.to_csv(reversed, index=False)
     
 
-def test_single_pattern(number_to_test:int, patterns_db="patterns_db.csv", 
+def check_single_pattern_on_lenta(number_to_test:int, patterns_db="patterns_db.csv", 
                         lenta_path="D:/OneDrive/data/lenta_check/lenta_130821_reversed.csv", extended = False):
     """Функция для тестирования паттернов для детекции отдельного иноагента.
 
@@ -176,12 +176,10 @@ def main():
     start = time.time()
     for i in range(93,94):
         print("\n************\ni = {}, номер строки = {}".format(i, i+1))
-        test_single_pattern(i)
-        time.sleep(20)
+        check_single_pattern_on_lenta(i, extended = False)
     
     print("Проверка заняла: {0:.2f} секунд".format(time.time() - start))
     
-    # test_single_pattern(7, extended = False)
     
 if __name__ == "__main__":
     main()

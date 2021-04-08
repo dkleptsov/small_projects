@@ -6,7 +6,7 @@ from aiogram.types import BotCommand
 from aiogram.types.message import ContentType
 import time
 from loguru import logger
-from test_pattern import check_all_patterns
+from check_inoagent import check_all_patterns
 import gc
 
 if sys.platform == "win32":
