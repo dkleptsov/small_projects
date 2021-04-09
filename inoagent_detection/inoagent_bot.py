@@ -70,7 +70,7 @@ def main():
         await message.answer(AWAIT_MSG, reply_markup=keyboard_markup)
         start = time.time()
         results = check_all_patterns(message["text"], 
-        patterns_db=PATTERN_DB)
+        patterns_db=PATTERN_DB, verbose=False)
         if len(results) > 0:
             for i in range(len(results)):
                 await message.answer(

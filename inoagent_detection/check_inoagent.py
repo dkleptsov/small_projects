@@ -5,7 +5,7 @@ from datetime import datetime
 
 def check_single_pattern(text_to_check:str, pattern:str, name="pass", 
                          inoagent_type="pass", org_type="pass", date="pass", 
-                         excluded="pass", verbose=True):
+                         excluded="pass", verbose=True) -> dict:
     """
     Функция, ищет в тексте упоминание отдельной организации.
 
@@ -44,7 +44,7 @@ def check_single_pattern(text_to_check:str, pattern:str, name="pass",
 
 
 def check_all_patterns(text_to_check:str, extended=False, 
-                       patterns_db="patterns_db.csv", verbose=False):
+                       patterns_db="patterns_db.csv", verbose=False) -> dict:
     """
     Функция, которая ищет в тексте упоминание всех организаций из списка.
     Для самого процесса поиска вызывает функцию check_single_pattern.
@@ -74,13 +74,13 @@ def check_all_patterns(text_to_check:str, extended=False,
                         row[2], row[3], row[4], row[5], row[6], verbose):
                     results[num_results] = result
                     num_results += 1
-    if verbose and len(results) > 0:
-        print('Total number of results: {}'.format(len(results)))
+    # if verbose and len(results) > 0:
+    #     print('Total number of results: {}'.format(len(results)))
     return results
     
     
 def main():
-    with open("text_to_search.txt", "r", encoding="utf-8") as text_file:
+    with open("autotest_db/text_to_search.txt", "r", encoding="utf-8") as text_file:
         check_all_patterns(text_file.read(), verbose=True)
 
 
