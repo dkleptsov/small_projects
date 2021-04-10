@@ -1,0 +1,2 @@
+def yyy():
+    return "yyy"
