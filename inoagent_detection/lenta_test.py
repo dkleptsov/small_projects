@@ -9,8 +9,8 @@ from get_new_results import get_sep_patterns_results
 
 RESULTS_ALL_PTNS = "autotest_db/results_all_patterns_db.pkl"
 RESULTS_SEP_PTNS = "autotest_db/results_separate_patterns_db.pkl"
-RESULTS_ALL_PTNS_NEW = "autotest_db/results_all_patterns_db_new.pkl"
-RESULTS_SEP_PTNS_NEW = "autotest_db/results_separate_patterns_db_new.pkl"
+RESULTS_ALL_PTNS_NEW = "autotest_db/results_all_patterns_db.pkl"
+RESULTS_SEP_PTNS_NEW = "autotest_db/results_separate_patterns_db.pkl"
 
 with open(RESULTS_ALL_PTNS, "rb") as pkl_file:
     old_results_all = pickle.load(pkl_file, encoding="utf-8")
@@ -19,7 +19,7 @@ with open(RESULTS_SEP_PTNS, "rb") as pkl_file:
     old_results_sep = pickle.load(pkl_file, encoding="utf-8")
 
 new_results_all = get_all_patterns_results(RESULTS_ALL_PTNS_NEW, load_old=True)
-new_results_sep = get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
+new_results_sep = get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=True)
 
 # Testing all patterns results
 def test_results_all_keys() -> None:

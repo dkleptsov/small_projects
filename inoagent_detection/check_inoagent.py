@@ -1,11 +1,9 @@
 import re
 import csv
-from datetime import datetime
 
 
 def check_single_pattern(text_to_check:str, pattern:str) -> dict:
-    """
-    Функция, ищет в тексте упоминание отдельной организации.
+    """Функция, ищет в тексте упоминание отдельной организации.
     Args:
         text_to_check (str): Текст, который надо проверить, очищенный от тегов.
         pattern (str): Строка с регулярными выражениями.
@@ -21,16 +19,14 @@ def check_single_pattern(text_to_check:str, pattern:str) -> dict:
 
 def check_all_patterns(text_to_check:str, extended=False, 
                        patterns_db="patterns_db.csv") -> dict:
-    """
-    Функция, которая ищет в тексте упоминание всех организаций из списка.
+    """Функция, которая ищет в тексте упоминание всех организаций из списка.
     Для самого процесса поиска вызывает функцию check_single_pattern.
     Args:
         text_to_check (str): Текст, который надо проверить, очищенный от тегов.
         extended (bool, optional): Применять ли расширенный набор правил. 
         patterns_db (str, optional): Путь к базе данных с информацией. 
     Returns:
-        results: Возвращает все найденные совпадения в формате dictionary.
-    """
+        results: Возвращает все найденные совпадения в формате dictionary."""
     with open(patterns_db, encoding="utf-8") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=';')
         num_results = 0

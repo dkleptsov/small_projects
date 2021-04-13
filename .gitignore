@@ -157,3 +157,6 @@ getafterit_bot/plan.txt
 inoagent_detection/logs/
 inoagent_detection/releases/0.2/.vscode/
 *.pkl
+*.pkl
+*.pkl
+inoagent_detection/autotest_db/results_all_patterns_db.pkl
