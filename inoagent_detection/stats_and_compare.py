@@ -12,10 +12,22 @@ RESULTS_SEP_PTNS = "autotest_db/results_separate_patterns_db_new.pkl"
 RESULTS_SEP_PTNS_NEW = "autotest_db/results_separate_patterns_db_new.pkl"
 
 
+def sort_dict(dict2sort) -> dict:
+    sorted_list = []
+    for key, value in dict2sort.items():
+        sorted_list.append((key, len(value)))
+    sorted_list.sort(key=lambda x:x[1], reverse=True)
+    sorted_dict = {}
+    for k, _ in sorted_list:
+        sorted_dict[k] = dict2sort[k]
+    return sorted_dict
+
+
 def print_stats(path=RESULTS_SEP_PTNS_NEW) -> None:
     """Function to print basic stats about results."""
     with open(path, "rb") as pkl_file:
         results_sep = pickle.load(pkl_file, encoding="utf-8")
+    results_sep = sort_dict(results_sep)
     for key, value in results_sep.items():
         if len(value) > 0:
             print(f"Pattern: {key} Quantity: {len(value)}")
@@ -25,7 +37,7 @@ def print_stats(path=RESULTS_SEP_PTNS_NEW) -> None:
     sns.set_style("darkgrid")
     sns_plot = sns.barplot(x=keys, y=vals)
     sns_plot.set_xticklabels(sns_plot.get_xticklabels(),rotation=90,ha='right')
-    sns_plot.figure.set_figwidth(16)
+    sns_plot.figure.set_figwidth(18)
     sns_plot.figure.set_figheight(10)
     sns_plot.figure.savefig("autotest_db/results_chart.png")
 
@@ -55,10 +67,10 @@ def normal_vs_extended(path=RESULTS_SEP_PTNS_NEW) -> None:
             results.get(f"normal_{i}"), results.get(f"extended_{i}"))
         if only_in_normal != []:
             print(f"\n********* Only in normal_{i}: *********")
-            pprint(only_in_normal)
+            print(only_in_normal)
         if only_in_extended != []:
             print(f"\n********* Only in extended_{i}: *********")
-            pprint(only_in_extended)
+            print(only_in_extended)
 
 
 def test_regex() -> None:
@@ -66,9 +78,9 @@ def test_regex() -> None:
 
 
 def main():
-    # get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
+    get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
     # print_stats(RESULTS_SEP_PTNS)
-    normal_vs_extended()
+    # normal_vs_extended()
 
 if __name__ == "__main__":
     main()
