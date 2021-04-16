@@ -13,23 +13,17 @@ INOAGENT_LIST = "autotest_db/text_to_search.txt"
 LENTA_FILE = "D:/OneDrive/data/lenta_check/lenta_130821_reversed.csv"
 PATTERNS_DB = "patterns_db.csv"
 
-
-with open(INOAGENT_LIST, "r", encoding="utf-8") as text_file:
-    inoagent_list = text_file.read()
-
-with open(LENTA_FILE, "r", encoding="utf-8") as lnt_file:
-    lenta = list(csv.reader(lnt_file, delimiter=','))
-
-with open(PATTERNS_DB, encoding="utf-8") as patterns_file:
-    patterns = list(csv.reader(patterns_file, delimiter=';'))
-
-
 def get_all_patterns_results(results_path: str, load_old=False) -> dict:
     if load_old:
         with open(results_path, "rb") as pkl_file:
             new_results_all = pickle.load(pkl_file, encoding="utf-8")
         return new_results_all
-    
+
+    with open(INOAGENT_LIST, "r", encoding="utf-8") as text_file:
+        inoagent_list = text_file.read()
+    with open(LENTA_FILE, "r", encoding="utf-8") as lnt_file:
+        lenta = list(csv.reader(lnt_file, delimiter=','))
+
     new_results_all: dict = {}
     new_results_all["inoagent_list_all"] = check_all_patterns(inoagent_list)
     for news in tqdm(lenta):
@@ -47,6 +41,11 @@ def get_sep_patterns_results(results_path: str, load_old=False) -> dict:
         with open(results_path, "rb") as pkl_file:
             new_results_all = pickle.load(pkl_file, encoding="utf-8")
         return new_results_all
+
+    with open(LENTA_FILE, "r", encoding="utf-8") as lnt_file:
+        lenta = list(csv.reader(lnt_file, delimiter=','))
+    with open(PATTERNS_DB, encoding="utf-8") as patterns_file:
+        patterns = list(csv.reader(patterns_file, delimiter=';'))
 
     new_results_sep: dict = {}
     for i, pattern in tqdm(enumerate(patterns)):

@@ -48,8 +48,9 @@ def check_all_patterns(text_to_check:str, extended=False,
     
     
 def main():
-    with open("autotest_db/text_to_search.txt", "r", encoding="utf-8") as text_file:
-        check_all_patterns(text_file.read())
+    # with open("autotest_db/text_to_search.txt", "r", encoding="utf-8") as text_file:
+    #     check_all_patterns(text_file.read())
+    pass
 
 
 if __name__ == "__main__":

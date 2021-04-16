@@ -5,6 +5,7 @@ import seaborn as sns
 # import pandas as pd
 # import numpy as np
 from pprint import pprint
+from time import time
 from get_new_results import get_all_patterns_results
 from get_new_results import get_sep_patterns_results
 
@@ -47,6 +48,11 @@ def dict_compare(dict_1: dict, dict_2:dict) -> list:
     only_in_1, only_in_2 = [], []
     if dict_1 == dict_2:
         return only_in_1, only_in_2
+    
+    if dict_1 == None:
+        return [], dict_2
+    elif dict_2 == None:
+        return dict_1, []
 
     for item in dict_1.items():
         if item not in dict_2.items():
@@ -67,10 +73,33 @@ def normal_vs_extended(path=RESULTS_SEP_PTNS_NEW) -> None:
             results.get(f"normal_{i}"), results.get(f"extended_{i}"))
         if only_in_normal != []:
             print(f"\n********* Only in normal_{i}: *********")
-            print(only_in_normal)
+            print_result(only_in_normal)
         if only_in_extended != []:
             print(f"\n********* Only in extended_{i}: *********")
-            print(only_in_extended)
+            print_result(only_in_extended)
+
+
+def print_result(list2print:list) -> None:
+    for _, value in list2print:
+        print(f"Text: {value['text_found']}            url: {value['url']}")
+        name = value['name']
+    print(f"Name: {name}")
+
+def old_vs_new(old_path = "autotest_db/results_separate_patterns_db.pkl",
+               new_path = "autotest_db/results_separate_patterns_db_new.pkl"):
+    with open(old_path, "rb") as pkl_file:
+        old = pickle.load(pkl_file, encoding="utf-8")
+    with open(new_path, "rb") as pkl_file:
+        new = pickle.load(pkl_file, encoding="utf-8")
+    
+    for key in set(list(old.keys()) + list(new.keys())):           
+        only_in_old, only_in_new = dict_compare(old.get(key), new.get(key))
+        if only_in_old != []:
+            print(f"\n********* Deleted in {key}: *********")
+            print_result(only_in_old)
+        if only_in_new != []:
+            print(f"\n********* Added in {key}: *********")
+            print_result(only_in_new)    
 
 
 def test_regex() -> None:
@@ -78,9 +107,12 @@ def test_regex() -> None:
 
 
 def main():
-    get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
+    start = time()
+    # get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
     # print_stats(RESULTS_SEP_PTNS)
-    # normal_vs_extended()
+    normal_vs_extended()
+    # old_vs_new()
+    print(f"It took {time()-start} seconds!")
 
 if __name__ == "__main__":
     main()
