@@ -108,9 +108,9 @@ def test_regex() -> None:
 
 def main():
     start = time()
-    # get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
+    get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
     # print_stats(RESULTS_SEP_PTNS)
-    normal_vs_extended()
+    # normal_vs_extended()
     # old_vs_new()
     print(f"It took {time()-start} seconds!")
 
