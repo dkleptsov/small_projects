@@ -6,11 +6,11 @@ import seaborn as sns
 # import numpy as np
 from pprint import pprint
 from time import time
-from get_new_results import get_all_patterns_results
-from get_new_results import get_sep_patterns_results
+from check_lenta import get_results
 
-RESULTS_SEP_PTNS = "autotest_db/results_separate_patterns_db_new.pkl"
-RESULTS_SEP_PTNS_NEW = "autotest_db/results_separate_patterns_db_new.pkl"
+
+RESULTS = "autotest_db/results_db.pkl"
+RESULTS_NEW = "autotest_db/results_db.pkl"
 
 
 def sort_dict(dict2sort) -> dict:
@@ -24,7 +24,7 @@ def sort_dict(dict2sort) -> dict:
     return sorted_dict
 
 
-def print_stats(path=RESULTS_SEP_PTNS_NEW) -> None:
+def print_stats(path=RESULTS_NEW) -> None:
     """Function to print basic stats about results."""
     with open(path, "rb") as pkl_file:
         results_sep = pickle.load(pkl_file, encoding="utf-8")
@@ -63,7 +63,7 @@ def dict_compare(dict_1: dict, dict_2:dict) -> list:
             only_in_2.append(item)
     return only_in_1, only_in_2
 
-def normal_vs_extended(path=RESULTS_SEP_PTNS_NEW) -> None:
+def normal_vs_extended(path=RESULTS_NEW) -> None:
     """Function to compare results of normal and extended mode"""
     with open(path, "rb") as pkl_file:
         results = pickle.load(pkl_file, encoding="utf-8")
@@ -85,12 +85,15 @@ def print_result(list2print:list) -> None:
         name = value['name']
     print(f"Name: {name}")
 
-def old_vs_new(old_path = "autotest_db/results_separate_patterns_db.pkl",
-               new_path = "autotest_db/results_separate_patterns_db_new.pkl"):
+def old_vs_new(old_path = "autotest_db/results_db.pkl",
+               new_path = "autotest_db/results_db.pkl"):
     with open(old_path, "rb") as pkl_file:
-        old = pickle.load(pkl_file, encoding="utf-8")
+        old = pickle.load(pkl_file)
     with open(new_path, "rb") as pkl_file:
-        new = pickle.load(pkl_file, encoding="utf-8")
+        new = pickle.load(pkl_file)
+    
+    if old == new:
+        print("Old and new results are identical!")
     
     for key in set(list(old.keys()) + list(new.keys())):           
         only_in_old, only_in_new = dict_compare(old.get(key), new.get(key))
@@ -100,19 +103,19 @@ def old_vs_new(old_path = "autotest_db/results_separate_patterns_db.pkl",
         if only_in_new != []:
             print(f"\n********* Added in {key}: *********")
             print_result(only_in_new)    
-
-
-def test_regex() -> None:
-    pass
+        # pprint(old.get(key))
+        # print("*****")
+        # pprint(new.get(key))
 
 
 def main():
     start = time()
-    get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
-    # print_stats(RESULTS_SEP_PTNS)
+    # get_sep_patterns_results(RESULTS_SEP_PTNS_NEW, load_old=False)
+    print_stats(RESULTS)
     # normal_vs_extended()
     # old_vs_new()
     print(f"It took {time()-start} seconds!")
-
+    # # %% - интерактивная ячейка
 if __name__ == "__main__":
     main()
+

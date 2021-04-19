@@ -17,8 +17,8 @@ def check_single_pattern(text_to_check:str, pattern:str) -> dict:
         yield result
 
 
-def check_all_patterns(text_to_check:str, extended=False, 
-                       patterns_db="patterns_db.csv") -> dict:
+def check_all_patterns(text_to_check:str, extended:bool=False, 
+                       patterns_db:str="patterns_db.csv") -> dict:
     """Функция, которая ищет в тексте упоминание всех организаций из списка.
     Для самого процесса поиска вызывает функцию check_single_pattern.
     Args:
@@ -28,7 +28,7 @@ def check_all_patterns(text_to_check:str, extended=False,
     Returns:
         results: Возвращает все найденные совпадения в формате dictionary."""
     with open(patterns_db, encoding="utf-8") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=';')
+        csv_reader = list(csv.reader(csv_file, delimiter=';'))[1:]
         num_results = 0
         results = {}
         for row in csv_reader:
@@ -48,9 +48,11 @@ def check_all_patterns(text_to_check:str, extended=False,
     
     
 def main():
-    # with open("autotest_db/text_to_search.txt", "r", encoding="utf-8") as text_file:
-    #     check_all_patterns(text_file.read())
-    pass
+    with open("autotest_db/text_to_search.txt", "r", 
+    encoding="utf-8") as text_file:
+        results = check_all_patterns(text_file.read())
+        print(results)
+        print(len(results))
 
 
 if __name__ == "__main__":

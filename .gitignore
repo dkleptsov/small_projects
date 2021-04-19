@@ -160,3 +160,7 @@ inoagent_detection/releases/0.2/.vscode/
 *.pkl
 *.pkl
 inoagent_detection/autotest_db/results_all_patterns_db.pkl
+*.pkl
+*.png
+inoagent_detection/autotest_db/results_all_patterns_db.pkl
+inoagent_detection/autotest_db/results_chart.png
