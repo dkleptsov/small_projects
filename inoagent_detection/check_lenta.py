@@ -5,6 +5,7 @@ import pickle
 from tqdm import tqdm
 import concurrent.futures
 from pprint import pprint
+import settings
 from check_inoagent import check_single_pattern
 
 
@@ -37,20 +38,16 @@ def get_results(results_path: str, load_old=False) -> dict:
     if load_old:
         with open(results_path, "rb") as pkl_file:
             new_results = pickle.load(pkl_file, encoding="utf-8")
-        return new_results    
-
-    INOAGENT_LIST = "autotest_db/text_to_search.txt"
-    LENTA_FILE = "D:/OneDrive/data/lenta_check/lenta_130821_reversed.csv"
-    PATTERNS_DB = "patterns_db.csv"
-
-    with open(INOAGENT_LIST, "r", encoding="utf-8") as text_file:
+        return new_results
+    print("Getting new results...")
+    with open(settings.INOAGENT_LIST, "r", encoding="utf-8") as text_file:
         inoagent_list_str = text_file.read()    
-    with open(LENTA_FILE, "r", encoding="utf-8") as lnt_file:
+    with open(settings.LENTA_FILE, "r", encoding="utf-8") as lnt_file:
         lenta = list(csv.reader(lnt_file, delimiter=','))
-    with open(PATTERNS_DB, encoding="utf-8") as patterns_file:
+    with open(settings.PATTERNS_DB, encoding="utf-8") as patterns_file:
         pattern_lines = list(csv.reader(patterns_file, delimiter=';'))[1:]
 
-    inoagent_line = [INOAGENT_LIST, "Список иностранных агентов", 
+    inoagent_line = [settings.INOAGENT_LIST, "Список иностранных агентов", 
                      inoagent_list_str, "", "", ""]
     lenta.append(inoagent_line)
 
@@ -69,7 +66,7 @@ def get_results(results_path: str, load_old=False) -> dict:
 
 def main():
     start = time.perf_counter()
-    get_results("autotest_db/results_db.pkl")
+    get_results(settings.RESULTS_NEW)
     print(f"It took {time.perf_counter() - start:.2f} seconds!")
 
 
