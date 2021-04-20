@@ -59,7 +59,7 @@ def dict_compare(dict_1: dict, dict_2:dict) -> list:
     return only_in_1, only_in_2
 
 
-def normal_vs_extended(path=settings.RESULTS_NEW) -> None:
+def normal_vs_extended(path=settings.RESULTS_NEW) -> dict:
     """Function to compare results of normal and extended mode"""
     with open(path, "rb") as pkl_file:
         results = pickle.load(pkl_file, encoding="utf-8")
@@ -73,6 +73,7 @@ def normal_vs_extended(path=settings.RESULTS_NEW) -> None:
         if only_in_extended != []:
             print(f"\n********* Only in extended_{i}: *********")
             print_result(only_in_extended)
+    return only_in_normal, only_in_extended
 
 
 def print_result(list2print:list) -> None:
@@ -83,7 +84,7 @@ def print_result(list2print:list) -> None:
 
 
 def old_vs_new(old_path = settings.RESULTS,
-               new_path = settings.RESULTS_NEW):
+               new_path = settings.RESULTS_NEW) -> None:
     with open(old_path, "rb") as pkl_file:
         old = pickle.load(pkl_file)
     with open(new_path, "rb") as pkl_file:
@@ -99,16 +100,19 @@ def old_vs_new(old_path = settings.RESULTS,
             print_result(only_in_old)
         if only_in_new != []:
             print(f"\n********* Added in {key}: *********")
-            print_result(only_in_new)    
+            print_result(only_in_new)
+    return only_in_old, only_in_new
 
 
-def check_one_new(num, old=settings.RESULTS):
+def check_one_new(num, old_path = settings.RESULTS) -> None:
     with open(settings.INOAGENT_LIST, "r", encoding="utf-8") as text_file:
         inoagent_list_str = text_file.read()    
     with open(settings.LENTA_FILE, "r", encoding="utf-8") as lnt_file:
         lenta = list(csv.reader(lnt_file, delimiter=','))
     with open(settings.PATTERNS_DB, encoding="utf-8") as patterns_file:
         pattern_lines = list(csv.reader(patterns_file, delimiter=';'))[1:]
+    with open(old_path, "rb") as pkl_file:
+        old = pickle.load(pkl_file)
 
     inoagent_line = [settings.INOAGENT_LIST, "Список иностранных агентов", 
                      inoagent_list_str, "", "", ""]
@@ -122,14 +126,22 @@ def check_one_new(num, old=settings.RESULTS):
     new_results = check_line(args)
     pprint(new_results)
 
+    old_results ={}
+    old_results[f"normal_{num}"] = old.get(f"normal_{num}")
+    old_results[f"extended_{num}"] = old.get(f"extended_{num}")
+    pprint(old_results)
+
+def compare_url(dict_1, dict_2) -> None:
+    pprint(dict_1)
+
 
 def main():
     start = time.perf_counter()
-    get_results(settings.RESULTS_NEW, load_old=False)
+    # get_results(settings.RESULTS_NEW)
     # print_stats(settings.RESULTS)
     # normal_vs_extended()
     # old_vs_new()
-    # check_one_new(45)
+    check_one_new(45)
     print(f"It took {time.perf_counter()-start:.2f} seconds!")
 
 

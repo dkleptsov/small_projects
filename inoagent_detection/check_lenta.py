@@ -9,7 +9,7 @@ import settings
 from check_inoagent import check_single_pattern
 
 
-def check_line(args) -> dict:
+def check_line(args:list) -> dict:
     """Function check whole lenta with single pattern. """
     normal_pattern, extended_pattern = args[1][1], args[1][0]
     inoagent_name = args[1][2]   
@@ -33,7 +33,7 @@ def check_line(args) -> dict:
     return results_line
 
 
-def get_results(results_path: str, load_old=False) -> dict:
+def get_results(results_path:str, load_old:bool = False) -> dict:
     """Function to check whole lenta with each pattern. Needed for testing. """
     if load_old:
         with open(results_path, "rb") as pkl_file:
@@ -52,7 +52,7 @@ def get_results(results_path: str, load_old=False) -> dict:
     lenta.append(inoagent_line)
 
     args = [(i, line, lenta) for i, line in enumerate(pattern_lines)]
-    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=3) as executor:
         results = executor.map(check_line, args)
     
     new_results: dict = {}
