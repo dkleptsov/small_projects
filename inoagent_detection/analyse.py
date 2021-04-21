@@ -83,16 +83,7 @@ def print_result(list2print:list) -> None:
     print(f"Name: {name}")
 
 
-def old_vs_new(old_path = settings.RESULTS,
-               new_path = settings.RESULTS_NEW) -> None:
-    with open(old_path, "rb") as pkl_file:
-        old = pickle.load(pkl_file)
-    with open(new_path, "rb") as pkl_file:
-        new = pickle.load(pkl_file)
-    
-    if old == new:
-        print("Old and new results are identical!")
-    
+def compare_results(old:dict, new:dict) -> dict:
     for key in set(list(old.keys()) + list(new.keys())):           
         only_in_old, only_in_new = dict_compare(old.get(key), new.get(key))
         if only_in_old != []:
@@ -102,6 +93,19 @@ def old_vs_new(old_path = settings.RESULTS,
             print(f"\n********* Added in {key}: *********")
             print_result(only_in_new)
     return only_in_old, only_in_new
+
+
+def old_vs_new(old_path = settings.RESULTS,
+               new_path = settings.RESULTS_NEW) -> dict:
+    with open(old_path, "rb") as pkl_file:
+        old = pickle.load(pkl_file)
+    with open(new_path, "rb") as pkl_file:
+        new = pickle.load(pkl_file)
+    
+    if old == new:
+        print("Old and new results are identical!")
+
+    return compare_results(old, new)
 
 
 def check_one_new(num, old_path = settings.RESULTS) -> None:
@@ -121,15 +125,16 @@ def check_one_new(num, old_path = settings.RESULTS) -> None:
     print(f"Normal pattern         {pattern_lines[num][1]}")
     print(f"Extended pattern       {pattern_lines[num][0]}")
     print(f"Row in CSV file        {num+2}")
-    print("New results:")
+    # print("New results:")
     args = [num, pattern_lines[num], lenta]
     new_results = check_line(args)
-    pprint(new_results)
-
+    # pprint(new_results)
     old_results ={}
-    old_results[f"normal_{num}"] = old.get(f"normal_{num}")
-    old_results[f"extended_{num}"] = old.get(f"extended_{num}")
-    pprint(old_results)
+    for key in new_results.keys():
+        old_results[key] = old.get(key)
+
+    return compare_results(old_results, new_results)
+
 
 def compare_url(dict_1, dict_2) -> None:
     pprint(dict_1)
@@ -140,8 +145,8 @@ def main():
     # get_results(settings.RESULTS_NEW)
     # print_stats(settings.RESULTS)
     # normal_vs_extended()
-    # old_vs_new()
-    check_one_new(45)
+    old_vs_new()
+    # check_one_new(45)
     print(f"It took {time.perf_counter()-start:.2f} seconds!")
 
 
