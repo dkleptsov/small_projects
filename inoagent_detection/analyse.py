@@ -121,23 +121,38 @@ def check_one_new(num, old_path = settings.RESULTS) -> None:
     inoagent_line = [settings.INOAGENT_LIST, "Список иностранных агентов", 
                      inoagent_list_str, "", "", ""]
     lenta.append(inoagent_line)
-    print(f"Name of inoagent       {pattern_lines[num][2]}")
-    print(f"Normal pattern         {pattern_lines[num][1]}")
-    print(f"Extended pattern       {pattern_lines[num][0]}")
-    print(f"Row in CSV file        {num+2}")
+    print(f"Name of inoagent        {pattern_lines[num][2]}")
+    print(f"Normal pattern         \"{pattern_lines[num][1]}\"")
+    print(f"Extended pattern       \"{pattern_lines[num][0]}\"")
+    print(f"Row in CSV file         {num+2}")
     # print("New results:")
     args = [num, pattern_lines[num], lenta]
     new_results = check_line(args)
-    # pprint(new_results)
-    old_results ={}
-    for key in new_results.keys():
-        old_results[key] = old.get(key)
-
-    return compare_results(old_results, new_results)
+    pprint(new_results)
+    # compact_print(new_results)
+    # old_results ={}
+    # for key in new_results.keys():
+    #     old_results[key] = old.get(key)
+    # return compare_results(old_results, new_results)
 
 
 def compare_url(dict_1, dict_2) -> None:
     pprint(dict_1)
+
+
+def compact_print(results) -> None:
+    for _, result in results.items():
+        for i, result2 in results.items():
+            print(i)
+            print(result.get('text_found'))
+            # pprint(result)
+
+
+    #     # print(result[0].get('text_found'))
+    #     print(f"{result[0].get('text_found')}          {result[0].get('url')}")
+    #     name = result[0].get('name')
+    # print(name)
+    # print(f"Number of results: {len(results.values())}")
 
 
 def main():
@@ -145,9 +160,9 @@ def main():
     # get_results(settings.RESULTS_NEW)
     # print_stats(settings.RESULTS)
     # normal_vs_extended()
-    old_vs_new()
-    # check_one_new(45)
-    print(f"It took {time.perf_counter()-start:.2f} seconds!")
+    # old_vs_new()
+    check_one_new(94)
+    # print(f"It took {time.perf_counter()-start:.2f} seconds!")
 
 
 if __name__ == "__main__":
