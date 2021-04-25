@@ -1,7 +1,7 @@
 import os
 import gc
 import time
-import gc
+import youtube_dl
 from loguru import logger
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import IDFilter
