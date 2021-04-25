@@ -1,16 +1,16 @@
 import os
+import gc
+import time
+import gc
+from loguru import logger
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import IDFilter
-import time
-from loguru import logger
-import gc
-import youtube_dl
 
 
 ADMIN_ID = 91675683
 LOGS_PATH = r"D:/repos/tmp/logs/my_yt_mp3.log"
 MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"
-BOT_TOKEN = os.getenv("YT2DRIVE_BOT")
+BOT_TOKEN = os.getenv("YOUTDLD_BOT")
 START_MSG = "This is private bot. 🔒"
 AWAIT_MSG = "Your message has been received. Please wait for an answer. 🤗"
 
@@ -26,10 +26,6 @@ dp = Dispatcher(bot)
 
 @logger.catch
 def main():
-    @dp.message_handler(commands=['start'])
-    async def start_message(message: types.Message):
-        await message.answer(START_MSG)
-
     @dp.message_handler(IDFilter(user_id=ADMIN_ID))
     async def all_messages(message: types.Message):
         if not (message["text"].startswith('https://www.youtube.com/')
