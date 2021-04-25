@@ -51,6 +51,23 @@ def manual_delete(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def add_commas(df:pd.DataFrame) -> pd.DataFrame:
+    df['email'] = df['email'].str.replace(' ',', ')
+    return df
+
+
+def create_email_df(df:pd.DataFrame) -> pd.DataFrame:
+    df['email'] = df['email'].str.replace(',',' ')
+    emails = set()
+    for row in df['email']:
+        for email in row.split():
+            emails.add(email)
+    df = pd.DataFrame(emails)
+    print(df)
+    
+    return df
+
+
 def print_df(df:pd.DataFrame) -> None:
     print(df)
     print(df.info())
@@ -59,7 +76,7 @@ def print_df(df:pd.DataFrame) -> None:
 
 
 def main():
-    DF_PATH = "D:/OneDrive/data/2gis/news/gazety_ia.csv"
+    DF_PATH = "D:/OneDrive/data/2gis/news/ia.csv"
     KW_LIST =['ремонт','наук', 'науч', 'авто', 'строй', 'бухг', 'детск', 
               'работ', 'недвиж', 'охот', 'хими', 'студ', 'физи', 'кроссв',
               'тв-програм', 'спорт', 'медиц', 'здоров', 'труд', 'цены', 
@@ -68,16 +85,20 @@ def main():
               'бирж', 'закон', 'футбол', 'воен', 'сельск', 'православн',
               'промышлен', 'аэро', 'все для вас', 'мода', 'женск', 'квартир', 
               'UUUUUU', 'UUUUU', 'UUUUUU', 'UUUUU', 'UUUUUU', 'UUUUU', 
-              'UUUUUU', 'UUUUU']
+              'UUUUUU', 'UUUUU'] # 'мото', 
     df = open_df(DF_PATH)
     # df = delete_empty(df)
     # df = delete_rg(df)
     # df = delete_email_copies(df)
-    for kw in KW_LIST:
-        df = delete_keyword(df, kw)
+    # for kw in KW_LIST:
+    #     df = delete_keyword(df, kw)
+    # df = add_commas(df)
+    df = create_email_df(df)
+    save_df(df, "D:/OneDrive/data/2gis/news/ia_emails.csv")
+
+
+    # print(df)
     # save_df(df, DF_PATH)
-
-
     # print_df(df)
 
 

@@ -18,7 +18,7 @@ else:
     LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
     PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
 
-ADMIN_NICK = "real_den"
+ADMIN_NICK = "my_admin_1"
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
 которые признаны иностранными агентами в Российской Федерации. 🕵️"
 CONTACTS_MSG = f"По всем вопросам пишите @{ADMIN_NICK}"
