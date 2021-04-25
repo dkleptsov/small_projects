@@ -76,7 +76,7 @@ def print_df(df:pd.DataFrame) -> None:
 
 
 def main():
-    DF_PATH = "D:/OneDrive/data/2gis/news/ia.csv"
+    DF_PATH = "D:/OneDrive/data/2gis/news/gazety_ia.csv"
     KW_LIST =['ремонт','наук', 'науч', 'авто', 'строй', 'бухг', 'детск', 
               'работ', 'недвиж', 'охот', 'хими', 'студ', 'физи', 'кроссв',
               'тв-програм', 'спорт', 'медиц', 'здоров', 'труд', 'цены', 
@@ -94,7 +94,7 @@ def main():
     #     df = delete_keyword(df, kw)
     # df = add_commas(df)
     df = create_email_df(df)
-    save_df(df, "D:/OneDrive/data/2gis/news/ia_emails.csv")
+    save_df(df, "D:/OneDrive/data/2gis/news/gazety_ia_emails.csv")
 
 
     # print(df)
