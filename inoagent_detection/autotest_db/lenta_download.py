@@ -97,7 +97,8 @@ class LentaParser:
         title = doc_tree.find("h1", attrs={"itemprop": "headline"})
         title = title.get_text() if title else " "
 
-        return {"title": clean(title), "text": clean(text), "topic": topic, "tags": tags}
+        return {"title": title, "text": text, "topic": topic, "tags": tags}
+        #return {"title": clean(title), "text": clean(text), "topic": topic, "tags": tags}
 
     @staticmethod
     def _extract_urls_from_html(html: str):
@@ -239,7 +240,7 @@ def main():
 
     # Шаг 1 Скачивание новостей, добавление их в основной файл и удаление дублей
     # Перезапустить, если не успешно
-    news_downloader(MAIN_CSV_PATH, "08.03.2021")
+    news_downloader(MAIN_CSV_PATH, "10.07.2020")
 
 
 if __name__ == "__main__":
