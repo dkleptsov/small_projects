@@ -1,7 +1,7 @@
 import csv
 import time
 import pickle
-import seaborn as sns
+# import seaborn as sns
 from pprint import pprint
 import settings
 from check_lenta import get_results
@@ -161,7 +161,7 @@ def main():
     # print_stats(settings.RESULTS)
     # normal_vs_extended()
     # old_vs_new()
-    check_one_new(94)
+    check_one_new(96)
     # print(f"It took {time.perf_counter()-start:.2f} seconds!")
 
 
