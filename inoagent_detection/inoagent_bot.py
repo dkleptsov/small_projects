@@ -49,7 +49,7 @@ async def set_commands(bot: Bot):
 
 
 async def monitor():
-    nko_changes = check_new_nko()
+    nko_changes = check_new_nko(rewrite=True)
     smi_changes = check_new_smi(rewrite=True)
     nko_added,nko_deleted = nko_changes.get('added'), nko_changes.get('deleted')
     smi_added,smi_deleted = smi_changes.get('added'), smi_changes.get('deleted')
