@@ -1,22 +1,27 @@
 #!/usr/bin/python3
 import os
+import gc
 import sys
+import time
+import asyncio
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import BotCommand
 from aiogram.types.message import ContentType
-import time
 from loguru import logger
 from check_inoagent import check_all_patterns
-import gc
+from monitoring.check_new_inoagents import check_new_nko
+from monitoring.check_new_inoagents import check_new_smi
 
 if sys.platform == "win32":
     BOT_TOKEN = os.getenv("TESTFLIGHT_BOT")
     LOGS_PATH = r"D:/repos/small_projects/inoagent_detection/logs/inoagent_bot.log"
     PATTERN_DB =r"D:/repos/small_projects/inoagent_detection/patterns_db.csv"
+    SUBS_DB = r"monitoring/subscribers.txt"
 else:
     BOT_TOKEN = os.getenv("INOAGENT_BOT")
     LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
     PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
+    SUBS_DB = r"monitoring/subscribers.txt"
 
 ADMIN_NICK = "my_admin_1"
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
@@ -43,6 +48,30 @@ async def set_commands(bot: Bot):
     await bot.set_my_commands(commands)
 
 
+async def monitor():
+    nko_changes = check_new_nko()
+    smi_changes = check_new_smi(rewrite=True)
+    nko_added,nko_deleted = nko_changes.get('added'), nko_changes.get('deleted')
+    smi_added,smi_deleted = smi_changes.get('added'), smi_changes.get('deleted')
+    changes = ""    
+    if nko_added:
+        changes += f"В список иноагентов НКО добавлено:\n{nko_added}\n"
+    if nko_deleted:
+        changes += f"Из списка иноагентов НКО удалено:\n{nko_deleted}\n"
+    if smi_added:
+        changes += f"В список иноагентов СМИ добавлено:\n{smi_added}\n"
+    if smi_deleted:
+        changes += f"Из списка иноагентов СМИ удалено:\n{smi_deleted}"
+    
+    with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
+        subs_list = subs_file.readlines()
+    
+    if len(changes) > 0:
+        for sub in subs_list:
+            await bot.send_message(sub, changes)
+    await asyncio.sleep(60)
+
+
 @logger.catch
 def main():
     logger.add(LOGS_PATH, format="{time} {level} {message}", retention="14 days"
@@ -55,6 +84,12 @@ def main():
     @dp.message_handler(commands=['help'])
     async def help_message(message: types.Message):
         await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
+        
+    @dp.message_handler(commands=['monitor'])
+    async def monitor_message(message: types.Message):
+        await bot.send_message(91675683, "Monitoring started!")
+        while True:
+            await monitor()
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")
     async def how_it_works(message: types.Message):

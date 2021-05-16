@@ -5,25 +5,22 @@ from pprint import pprint
 
 def compare_lists(old:str, new:str):
     old_set = set(old.split(sep="\n"))
-    new_set = set(new.split(sep="\n"))    
-    if old != new:
-        changes = {}
-        # Преобразовать в листы
-        changes["added"] = list(new_set.difference(old_set))
-        changes["deleted"] = list(old_set.difference(new_set))
-    else:
-        changes = None
+    new_set = set(new.split(sep="\n"))
+    changes = {"added": None, "deleted": None}
+    changes["added"] = list(new_set.difference(old_set))
+    changes["deleted"] = list(old_set.difference(new_set))
     return changes
 
 
 def check_new_nko(rewrite:bool = False):
     WD_PATH = "C:/Program Files (x86)/Chromedriver/chromedriver.exe"
     NKO_URL = "http://unro.minjust.ru/NKOForeignAgent.aspx"
-    OLD_NKO_PATH = "nko_list.txt"
+    OLD_NKO_PATH = "monitoring/nko_list.txt"
     SLEEP_TIME = 3
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
-    driver = webdriver.Chrome(WD_PATH)
+    # driver = webdriver.Chrome(WD_PATH)
+    driver = webdriver.Firefox()
     driver.get(NKO_URL)
 
     # Выбираем отображение по 500 записей на страницу
@@ -59,11 +56,12 @@ def check_new_nko(rewrite:bool = False):
 def check_new_smi(rewrite:bool = False):
     WD_PATH = "C:/Program Files (x86)/Chromedriver/chromedriver.exe"
     SMI_URL = "https://minjust.gov.ru/ru/documents/7755/"
-    OLD_SMI_PATH = "smi_list.txt"
+    OLD_SMI_PATH = "monitoring/smi_list.txt"
     SLEEP_TIME = 3
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
-    driver = webdriver.Chrome(WD_PATH)
+    # driver = webdriver.Chrome(WD_PATH)
+    driver = webdriver.Firefox()
     driver.get(SMI_URL)
     sleep(SLEEP_TIME)
 
