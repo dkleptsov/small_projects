@@ -21,7 +21,7 @@ else:
     BOT_TOKEN = os.getenv("INOAGENT_BOT")
     LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
     PATTERN_DB =r"/home/small_projects/inoagent_detection/patterns_db.csv"
-    SUBS_DB = r"monitoring/subscribers.txt"
+    SUBS_DB = r"/home/small_projects/inoagent_detection/monitoring/subscribers.txt"
 
 ADMIN_NICK = "my_admin_1"
 START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
@@ -55,13 +55,13 @@ async def monitor():
     smi_added,smi_deleted = smi_changes.get('added'), smi_changes.get('deleted')
     changes = ""    
     if nko_added:
-        changes += f"В список иноагентов НКО добавлено:\n{nko_added}\n"
+        changes += f"\nВ список иноагентов НКО добавлено:\n{nko_added}\n"
     if nko_deleted:
-        changes += f"Из списка иноагентов НКО удалено:\n{nko_deleted}\n"
+        changes += f"\nИз списка иноагентов НКО удалено:\n{nko_deleted}\n"
     if smi_added:
-        changes += f"В список иноагентов СМИ добавлено:\n{smi_added}\n"
+        changes += f"\nВ список иноагентов СМИ добавлено:\n{smi_added}\n"
     if smi_deleted:
-        changes += f"Из списка иноагентов СМИ удалено:\n{smi_deleted}"
+        changes += f"\nИз списка иноагентов СМИ удалено:\n{smi_deleted}"
     
     with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
         subs_list = subs_file.readlines()
@@ -69,7 +69,8 @@ async def monitor():
     if len(changes) > 0:
         for sub in subs_list:
             await bot.send_message(sub, changes)
-    await asyncio.sleep(60)
+    await bot.send_message(1631744908, "Inoagent monitoring is active!")
+    await asyncio.sleep(300)
 
 
 @logger.catch
@@ -87,7 +88,7 @@ def main():
         
     @dp.message_handler(commands=['monitor'])
     async def monitor_message(message: types.Message):
-        await bot.send_message(91675683, "Monitoring started!")
+        await bot.send_message(91675683, "Monitoring launched!")
         while True:
             await monitor()
 

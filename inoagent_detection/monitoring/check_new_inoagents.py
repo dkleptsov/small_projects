@@ -1,4 +1,5 @@
 from time import sleep
+from pyvirtualdisplay import Display
 from selenium import webdriver
 from pprint import pprint
 
@@ -19,7 +20,9 @@ def check_new_nko(rewrite:bool = False):
     SLEEP_TIME = 3
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
-    # driver = webdriver.Chrome(WD_PATH)
+    display = Display(visible=0, size=(128, 96))  
+    display.start()
+    # driver = webdriver.Chrome() #"/usr/lib/chromium-browser/chromedriver")#"/usr/bin/chromedriver")
     driver = webdriver.Firefox()
     driver.get(NKO_URL)
 
@@ -61,6 +64,8 @@ def check_new_smi(rewrite:bool = False):
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
     # driver = webdriver.Chrome(WD_PATH)
+    display = Display(visible=0, size=(128, 96))  
+    display.start()
     driver = webdriver.Firefox()
     driver.get(SMI_URL)
     sleep(SLEEP_TIME)
