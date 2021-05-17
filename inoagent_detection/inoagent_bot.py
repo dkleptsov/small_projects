@@ -70,7 +70,7 @@ async def monitor():
         for sub in subs_list:
             await bot.send_message(sub, changes)
     await bot.send_message(1631744908, "Inoagent monitoring is active!")
-    await asyncio.sleep(300)
+    await asyncio.sleep(900)
 
 
 @logger.catch
