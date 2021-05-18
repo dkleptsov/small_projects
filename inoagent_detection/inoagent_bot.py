@@ -32,6 +32,10 @@ NO_RES_MSG = f"Мы не нашли в тексте вашего сообщен�
 иностранных агентов 🤔. Если вам кажется, что мы что-то пропустили, \
 пожалуйста, напишите об этом @{ADMIN_NICK}"
 UNKN_CONTENT = "Этот бот умеет работать только с текстами. 😌"
+SUBSCRIBE_MSG = "Вы успешно подписались на уведомления об изменении списка \
+иностранных агетов."
+UNSUBSCRIBE_MSG = "Вы успешно отписались от уведомлений об изменении списка \
+иностранных агетов."
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -44,6 +48,10 @@ async def set_commands(bot: Bot):
     commands = [
         BotCommand(command="/start", description="Запустить бота."),
         BotCommand(command="/help", description="Свяжитесь с нами."),
+        BotCommand(command="/subscribe", 
+        description="Подписаться на сообщения об изменении списка иноагентов."),
+        BotCommand(command="/unsubscribe", 
+        description="Отписаться от сообщений об изменении списка иноагентов."),        
                 ]
     await bot.set_my_commands(commands)
 
@@ -70,7 +78,7 @@ async def monitor():
         for sub in subs_list:
             await bot.send_message(sub, changes)
     await bot.send_message(1631744908, "Inoagent monitoring is active!")
-    await asyncio.sleep(900)
+    await asyncio.sleep(1200)
 
 
 @logger.catch
@@ -78,27 +86,55 @@ def main():
     logger.add(LOGS_PATH, format="{time} {level} {message}", retention="14 days"
               , serialize=True)
 
+
     @dp.message_handler(commands=['start'])
     async def start_message(message: types.Message):
         await message.answer(START_MSG, reply_markup=keyboard_markup)
-    
+
+
     @dp.message_handler(commands=['help'])
     async def help_message(message: types.Message):
         await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
-        
+
+
+    @dp.message_handler(commands=['reboot'])
+    async def reboot_message(message: types.Message):
+        await bot.send_message(1631744908, "Server will reboot!")
+        os.system("reboot")
+
+
     @dp.message_handler(commands=['monitor'])
     async def monitor_message(message: types.Message):
-        await bot.send_message(91675683, "Monitoring launched!")
+        await bot.send_message(1631744908, "Monitoring launched!")
         while True:
-            await monitor()
+            try:
+                await monitor()
+            except:
+                await bot.send_message(1631744908, "Monitoring failed once!")
+
+
+    @dp.message_handler(commands=['subscribe'])
+    async def subscribe_message(message: types.Message):
+        with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
+            subs_list = subs_file.readlines()
+        
+        await message.answer(SUBSCRIBE_MSG, reply_markup=keyboard_markup)
+
+
+    @dp.message_handler(commands=['unsubscribe'])
+    async def unsubscribe_message(message: types.Message):
+        await message.answer(UNSUBSCRIBE_MSG, reply_markup=keyboard_markup)
+
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")
     async def how_it_works(message: types.Message):
         await message.answer(START_MSG, reply_markup=keyboard_markup)
 
+
     @dp.message_handler(lambda message: message["text"] == "🤓 Контакты")
     async def contact_us(message: types.Message):
         await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
+
 
     @dp.message_handler()
     async def all_messages(message: types.Message):
@@ -132,7 +168,8 @@ def main():
 
         # Garbage collection
         gc.collect()
-    
+
+
     @dp.message_handler(content_types=ContentType.ANY)
     async def unknown_content(message: types.Message):
         await message.answer(UNKN_CONTENT)
