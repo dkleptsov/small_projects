@@ -14,9 +14,10 @@ from monitoring.check_new_inoagents import check_new_smi
 
 if sys.platform == "win32":
     BOT_TOKEN = os.getenv("TESTFLIGHT_BOT")
-    LOGS_PATH = r"D:/repos/small_projects/inoagent_detection/logs/inoagent_bot.log"
-    PATTERN_DB =r"D:/repos/small_projects/inoagent_detection/patterns_db.csv"
-    SUBS_DB = r"monitoring/subscribers.txt"
+    BASE_PATH = r"D:/repos/small_projects/inoagent_detection/"
+    LOGS_PATH = BASE_PATH + r"logs/inoagent_bot.log"
+    PATTERN_DB = BASE_PATH + r"patterns_db.csv"
+    SUBS_DB = BASE_PATH + r"monitoring/subscribers.txt"
 else:
     BOT_TOKEN = os.getenv("INOAGENT_BOT")
     LOGS_PATH = r"/home/small_projects/inoagent_detection/logs/inoagent_bot.log"
@@ -24,8 +25,11 @@ else:
     SUBS_DB = r"/home/small_projects/inoagent_detection/monitoring/subscribers.txt"
 
 ADMIN_NICK = "my_admin_1"
-START_MSG = "Этот бот проверяет текст на наличие упоминаний организаций, \
-которые признаны иностранными агентами в Российской Федерации. 🕵️"
+START_MSG = "Этот бот проверяет текст, который вы ему пришлете, на наличие \
+упоминаний организаций, которые признаны иностранными агентами в \
+Российской Федерации. 🕵️ \n\nЕсли нажать кнопку 🔔 Подписаться, то бот будет \
+оперативно присылать уведомления, если в списке иноагентов \
+произойдут изменения."
 CONTACTS_MSG = f"По всем вопросам пишите @{ADMIN_NICK}"
 AWAIT_MSG = "Ваше сообщение получено, пожалуста, ожидайте ответа. 🤗"
 NO_RES_MSG = f"Мы не нашли в тексте вашего сообщения упоминаний \
@@ -33,25 +37,26 @@ NO_RES_MSG = f"Мы не нашли в тексте вашего сообщен�
 пожалуйста, напишите об этом @{ADMIN_NICK}"
 UNKN_CONTENT = "Этот бот умеет работать только с текстами. 😌"
 SUBSCRIBE_MSG = "Вы успешно подписались на уведомления об изменении списка \
-иностранных агетов."
+иностранных агетов. 🤗"
 UNSUBSCRIBE_MSG = "Вы успешно отписались от уведомлений об изменении списка \
-иностранных агетов."
+иностранных агетов. 🤗"
+SUBSCRIBED_MSG = "Вы уже подписаны на уведомления об изменении списка \
+иностранных агетов. 🤗"
+NOT_SUBSCRIBED_MSG = "Вы не подписаны на уведомления об изменении списка \
+иностранных агетов. 🤗"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-btns_text = ('💡 Как это работает', '🤓 Контакты')
+btns_text = ('💡 Как это работает', '🔔 Подписаться', '🔕 Отписаться',
+              '🤓 Контакты')
 keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
 async def set_commands(bot: Bot):
     commands = [
         BotCommand(command="/start", description="Запустить бота."),
-        BotCommand(command="/help", description="Свяжитесь с нами."),
-        BotCommand(command="/subscribe", 
-        description="Подписаться на сообщения об изменении списка иноагентов."),
-        BotCommand(command="/unsubscribe", 
-        description="Отписаться от сообщений об изменении списка иноагентов."),        
+        BotCommand(command="/help", description="Свяжитесь с нами."),     
                 ]
     await bot.set_my_commands(commands)
 
@@ -111,19 +116,42 @@ def main():
                 await monitor()
             except:
                 await bot.send_message(1631744908, "Monitoring failed once!")
+                await asyncio.sleep(60)
 
 
-    @dp.message_handler(commands=['subscribe'])
+    @dp.message_handler(lambda message: message["text"] == '🔔 Подписаться')
     async def subscribe_message(message: types.Message):
         with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
             subs_list = subs_file.readlines()
+        new_sub = str(message['from']['id']) + "\n"
+        if new_sub in subs_list:
+            await message.answer(SUBSCRIBED_MSG, reply_markup=keyboard_markup)
+        else:
+            subs_list.append(new_sub)
+            with open(SUBS_DB, "a", encoding="utf-8") as subs_file:
+                subs_file.write(new_sub)            
+            await message.answer(SUBSCRIBE_MSG, reply_markup=keyboard_markup)
         
-        await message.answer(SUBSCRIBE_MSG, reply_markup=keyboard_markup)
+        await bot.send_message(1631744908, f"New subscriber: {new_sub} \
+            \n Current list: {subs_list}")
 
 
-    @dp.message_handler(commands=['unsubscribe'])
+    @dp.message_handler(lambda message: message["text"] == '🔕 Отписаться')
     async def unsubscribe_message(message: types.Message):
-        await message.answer(UNSUBSCRIBE_MSG, reply_markup=keyboard_markup)
+        with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
+            subs_list = subs_file.readlines()
+        new_sub = str(message['from']['id']) + "\n"
+        if new_sub in subs_list:
+            subs_list = set(subs_list)
+            subs_list.remove(new_sub)
+            with open(SUBS_DB, "w", encoding="utf-8") as subs_file:
+                subs_file.writelines(subs_list)
+            await message.answer(UNSUBSCRIBE_MSG, reply_markup=keyboard_markup)
+        else:
+            await message.answer(NOT_SUBSCRIBED_MSG, reply_markup=keyboard_markup)         
+
+        await bot.send_message(1631744908, f"Subscriber removed: {new_sub} \
+            \n Current list: {subs_list}")
 
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")

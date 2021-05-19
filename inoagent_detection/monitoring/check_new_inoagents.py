@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 from pyvirtualdisplay import Display
 from selenium import webdriver
@@ -14,15 +15,14 @@ def compare_lists(old:str, new:str):
 
 
 def check_new_nko(rewrite:bool = False):
-    WD_PATH = "C:/Program Files (x86)/Chromedriver/chromedriver.exe"
     NKO_URL = "http://unro.minjust.ru/NKOForeignAgent.aspx"
     OLD_NKO_PATH = "monitoring/nko_list.txt"
     SLEEP_TIME = 3
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
-    display = Display(visible=0, size=(128, 96))  
-    display.start()
-    # driver = webdriver.Chrome() #"/usr/lib/chromium-browser/chromedriver")#"/usr/bin/chromedriver")
+    if sys.platform != "win32":
+        display = Display(visible=0, size=(128, 96))  
+        display.start()
     driver = webdriver.Firefox()
     driver.get(NKO_URL)
 
@@ -57,15 +57,14 @@ def check_new_nko(rewrite:bool = False):
 
 
 def check_new_smi(rewrite:bool = False):
-    WD_PATH = "C:/Program Files (x86)/Chromedriver/chromedriver.exe"
     SMI_URL = "https://minjust.gov.ru/ru/documents/7755/"
     OLD_SMI_PATH = "monitoring/smi_list.txt"
     SLEEP_TIME = 3
 
     # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
-    # driver = webdriver.Chrome(WD_PATH)
-    display = Display(visible=0, size=(128, 96))  
-    display.start()
+    if sys.platform != "win32":
+        display = Display(visible=0, size=(128, 96))  
+        display.start()
     driver = webdriver.Firefox()
     driver.get(SMI_URL)
     sleep(SLEEP_TIME)
