@@ -11,6 +11,8 @@ from loguru import logger
 from check_inoagent import check_all_patterns
 from monitoring.check_new_inoagents import check_new_nko
 from monitoring.check_new_inoagents import check_new_smi
+from monitoring.check_pc import health
+
 
 if sys.platform == "win32":
     BOT_TOKEN = os.getenv("TESTFLIGHT_BOT")
@@ -85,7 +87,7 @@ async def monitor():
     if len(changes) > 0:
         for sub in subs_list:
             await bot.send_message(sub, changes)
-    await bot.send_message(1631744908, "Inoagent monitoring is active!")
+    await bot.send_message(1631744908, f"Success! Resources used: {health()}")
     gc.collect()
     await asyncio.sleep(1200)
 
@@ -112,6 +114,11 @@ def main():
         os.system("reboot")
 
 
+    @dp.message_handler(commands=['health'])
+    async def health_message(message: types.Message):
+        await bot.send_message(1631744908, health())
+
+
     @dp.message_handler(commands=['monitor'])
     async def monitor_message(message: types.Message):
         await bot.send_message(1631744908, "Monitoring launched!")
@@ -119,9 +126,13 @@ def main():
             try:
                 await monitor()
             except:
-                await bot.send_message(1631744908, "Monitoring failed once!")
+                await bot.send_message(1631744908, 
+                f"FAILED! Resources used: {health()}")
                 await asyncio.sleep(60)
                 gc.collect()
+        # else:
+        #     await message.answer("Monitoring already active",
+        #     reply_markup=keyboard_markup)
 
 
     @dp.message_handler(lambda message: message["text"] == '🔔 Подписаться')
@@ -136,8 +147,9 @@ def main():
             with open(SUBS_DB, "a", encoding="utf-8") as subs_file:
                 subs_file.write(new_sub)            
             await message.answer(SUBSCRIBE_MSG, reply_markup=keyboard_markup)
-        
-        await bot.send_message(1631744908, f"New subscriber: {new_sub} \
+            await bot.send_message(1631744908, 
+            f"New subscriber! \nid: {message['from']['id']}\
+            \nnick: {message['from']['username']}\
             \n Current list: {subs_list}")
 
 
@@ -152,11 +164,12 @@ def main():
             with open(SUBS_DB, "w", encoding="utf-8") as subs_file:
                 subs_file.writelines(subs_list)
             await message.answer(UNSUBSCRIBE_MSG, reply_markup=keyboard_markup)
+            await bot.send_message(1631744908, 
+            f"Subscriber removed! \nid: {message['from']['id']}\
+            \nnick: {message['from']['username']}\
+            \n Current list: {subs_list}")
         else:
             await message.answer(NOT_SUBSCRIBED_MSG, reply_markup=keyboard_markup)         
-
-        await bot.send_message(1631744908, f"Subscriber removed: {new_sub} \
-            \n Current list: {subs_list}")
 
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")

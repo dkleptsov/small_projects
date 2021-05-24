@@ -52,7 +52,8 @@ def check_new_nko(rewrite:bool = False):
         with open(OLD_NKO_PATH, "w+", encoding="utf-8") as text_file:
             text_file.write(new_nko_str)
 
-    driver.quit()    
+    driver.quit()
+    display.stop()
     return nko_changes
 
 
@@ -85,7 +86,8 @@ def check_new_smi(rewrite:bool = False):
         with open(OLD_SMI_PATH, "w+", encoding="utf-8") as text_file:
             text_file.write(new_smi_str)
 
-    driver.quit()    
+    driver.quit()
+    display.stop()
     return smi_changes
 
 
