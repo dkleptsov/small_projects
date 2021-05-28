@@ -1,6 +1,8 @@
+import os
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
 
 MESSAGE = 'Hello! How are you doing?\
 \nCurrently I am studying Deep learning and I really want to apply my knowledge to real life projects. \
@@ -13,25 +15,29 @@ MESSAGE = 'Hello! How are you doing?\
 \nThanks in advance. I look forward to hearing from you. Kind regards.\
 \nDenis Kleptsov'
 
+errors = 0
+
 driver = webdriver.Chrome()
 driver.get("https://aaic2021.b2match.io/login")
 
 # Логинимся
 driver.find_element_by_id('Email').send_keys('denis@kleptsov.com')
-driver.find_element_by_id('Password').send_keys('busumsp1')
+driver.find_element_by_id('Password').send_keys(os.environ['SIMPLE_PASS'])
 driver.find_element_by_id('Password').send_keys(Keys.ENTER)
 
-for i in range (200, 1500):
+for i in range (2000, 2001):
     aaic_url = f"https://aaic2021.b2match.io/participants/{i}"
     driver.get(aaic_url)
     sleep(1)
     try:
-        driver.find_element_by_xpath("/html/body/section/main/section/div/div[1]/div/div[3]/a").click()
-        sleep(1)
-        driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/textarea").send_keys(MESSAGE)
-        driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/div/button[2]").click()
-        sleep(2)
+        if errors < 100:
+            driver.find_element_by_xpath("/html/body/section/main/section/div/div[1]/div/div[3]/a").click()
+            sleep(1)
+            driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/textarea").send_keys(MESSAGE)
+            driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/div/button[2]").click()
+            sleep(2)
     except:
+        errors += 1
         sleep(1)
 
 
@@ -40,5 +46,5 @@ for i in range (200, 1500):
 
 
 
-sleep(500)
+sleep(2)
 driver.quit()
