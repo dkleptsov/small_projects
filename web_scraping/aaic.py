@@ -25,7 +25,7 @@ driver.find_element_by_id('Email').send_keys('denis@kleptsov.com')
 driver.find_element_by_id('Password').send_keys(os.environ['SIMPLE_PASS'])
 driver.find_element_by_id('Password').send_keys(Keys.ENTER)
 
-for i in range (2000, 2001):
+for i in range (1800, 2000):
     aaic_url = f"https://aaic2021.b2match.io/participants/{i}"
     driver.get(aaic_url)
     sleep(1)
@@ -35,9 +35,11 @@ for i in range (2000, 2001):
             sleep(1)
             driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/textarea").send_keys(MESSAGE)
             driver.find_element_by_xpath("/html/body/section/main/div[2]/div/div/div[2]/form/div/div/div/button[2]").click()
+            print(f"SUCCESS!!!!! Counter: {i}, errors: {errors}")    
             sleep(2)
     except:
         errors += 1
+        print(f"Failed. Counter: {i}, errors: {errors}")
         sleep(1)
 
 
