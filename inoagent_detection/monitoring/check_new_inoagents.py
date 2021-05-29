@@ -53,7 +53,8 @@ def check_new_nko(rewrite:bool = False):
             text_file.write(new_nko_str)
 
     driver.quit()
-    display.stop()
+    if sys.platform != "win32":
+        display.stop()
     return nko_changes
 
 
@@ -87,13 +88,53 @@ def check_new_smi(rewrite:bool = False):
             text_file.write(new_smi_str)
 
     driver.quit()
-    display.stop()
+    if sys.platform != "win32":
+        display.stop()
     return smi_changes
 
 
+def check_new_eo(rewrite:bool = False):
+    EO_URL = "https://minjust.gov.ru/ru/documents/7822/"
+    EO_XPATH = "/html/body/main/div[3]/div/div[1]/div[1]/div[2]/div"
+    OLD_EO_PATH = "monitoring/eo_list.txt"
+    SLEEP_TIME = 3
+
+    # Инициализируем вебдрайвер и открываем страницу с иноагентами НКО
+    if sys.platform != "win32":
+        display = Display(visible=0, size=(128, 96))  
+        display.start()
+    driver = webdriver.Firefox()
+    driver.implicitly_wait(10)
+    driver.get(EO_URL)
+    
+    # Получаем таблицу с иноагентами СМИ
+    table = driver.find_element_by_xpath(EO_XPATH)
+    new_eo_str = table.text
+    print(new_eo_str)
+    
+    # # Открываем страницу со старым списком иноагентов СМИ
+    # with open(OLD_SMI_PATH, "r", encoding="utf-8") as text_file:
+    #     old_smi_str = text_file.read()
+
+    # # Сравниваем старый и новый список иноагентов
+    # smi_changes = compare_lists(old_smi_str, new_smi_str)
+  
+    # # Сохраняем новый список иноагентов НКО в файл
+    # if rewrite:
+    #     with open(OLD_SMI_PATH, "w+", encoding="utf-8") as text_file:
+    #         text_file.write(new_smi_str)
+    
+    sleep(SLEEP_TIME*10)
+    driver.quit()
+    if sys.platform != "win32":
+        display.stop()
+    return ""
+
+
 def main():
-    pprint(check_new_nko())
-    pprint(check_new_smi())
+    # pprint(check_new_nko())
+    # pprint(check_new_smi())
+    check_new_eo()
 
 
 if __name__ == "__main__":
