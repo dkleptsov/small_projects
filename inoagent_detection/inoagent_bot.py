@@ -67,7 +67,7 @@ async def set_commands(bot: Bot):
 
 
 async def monitor():
-    changes, downloads_status = check_all_orgs(rewrite=False)
+    changes, downloads_status = check_all_orgs(rewrite=True)
 
     with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
         subs_list = subs_file.readlines()
