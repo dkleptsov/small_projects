@@ -9,8 +9,7 @@ from aiogram.types import BotCommand
 from aiogram.types.message import ContentType
 from loguru import logger
 from check_inoagent import check_all_patterns
-from monitoring.check_new_inoagents import check_new_nko
-from monitoring.check_new_inoagents import check_new_smi
+from monitoring.check_new_orgs import check_all_orgs
 from monitoring.check_pc import health
 
 
@@ -27,15 +26,17 @@ else:
     SUBS_DB = r"/home/small_projects/inoagent_detection/monitoring/subscribers.txt"
 
 ADMIN_NICK = "my_admin_1"
-START_MSG = "Этот бот проверяет текст, который вы ему пришлете, на наличие \
-упоминаний организаций, которые признаны иностранными агентами в \
-Российской Федерации. 🕵️ \n\nЕсли нажать кнопку 🔔 Подписаться, то бот будет \
-оперативно присылать уведомления, если в списке иноагентов \
-произойдут изменения.\n\n\
-Реестры иностранных агентов:\n\
-СМИ: https://minjust.gov.ru/ru/documents/7755/ \n\
-НКО: http://unro.minjust.ru/NKOForeignAgent.aspx"
-CONTACTS_MSG = f"По всем вопросам пишите @{ADMIN_NICK}"
+LOGGING_ID = 1631744908
+START_MSG = f"🕵️ Пришлите боту любой текст, а он проверит его на наличие \
+имен организаций, которые признаны иностранными агентами в РФ.\n\n\
+🔔 Подписаться - получать уведомления, об изменениях в реестрах \
+организаций:\n\n\
+Иноагентов СМИ: https://minjust.gov.ru/ru/documents/7755/ \n\
+Иноагентов НКО: http://unro.minjust.ru/NKOForeignAgent.aspx\n\
+Экстремистских: https://minjust.gov.ru/ru/documents/7822/\n\
+Террористических: http://www.fsb.ru/fsb/npd/terror.htm\n\
+Нежелательных: https://minjust.gov.ru/ru/documents/7756/\n\n\
+🤓 По всем вопросам пишите @{ADMIN_NICK}"
 AWAIT_MSG = "Ваше сообщение получено, пожалуста, ожидайте ответа. 🤗"
 NO_RES_MSG = f"Мы не нашли в тексте вашего сообщения упоминаний \
 иностранных агентов 🤔. Если вам кажется, что мы что-то пропустили, \
@@ -53,81 +54,71 @@ NOT_SUBSCRIBED_MSG = "Вы не подписаны на уведомления �
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 keyboard_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-btns_text = ('💡 Как это работает', '🔔 Подписаться', '🔕 Отписаться',
-              '🤓 Контакты')
+btns_text = ('💡 Как это работает', '🔔 Подписаться', '🔕 Отписаться')
 keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
 async def set_commands(bot: Bot):
     commands = [
         BotCommand(command="/start", description="Запустить бота."),
-        BotCommand(command="/help", description="Свяжитесь с нами."),     
+        BotCommand(command="/help", description="Как это работает."),     
                 ]
     await bot.set_my_commands(commands)
 
 
 async def monitor():
-    nko_changes = check_new_nko(rewrite=True)
-    smi_changes = check_new_smi(rewrite=True)
-    nko_added,nko_deleted = nko_changes.get('added'), nko_changes.get('deleted')
-    smi_added,smi_deleted = smi_changes.get('added'), smi_changes.get('deleted')
-    changes = ""    
-    if nko_added:
-        changes += f"\nВ список иноагентов НКО добавлено:\n{nko_added}\n"
-    if nko_deleted:
-        changes += f"\nИз списка иноагентов НКО удалено:\n{nko_deleted}\n"
-    if smi_added:
-        changes += f"\nВ список иноагентов СМИ добавлено:\n{smi_added}\n"
-    if smi_deleted:
-        changes += f"\nИз списка иноагентов СМИ удалено:\n{smi_deleted}"
-    
+    changes, downloads_status = check_all_orgs(rewrite=False)
+
     with open(SUBS_DB, "r", encoding="utf-8") as subs_file:
         subs_list = subs_file.readlines()
     
     if len(changes) > 0:
         for sub in subs_list:
-            await bot.send_message(sub, changes)
-    await bot.send_message(1631744908, f"Success! Resources used: {health()}")
+            await bot.send_message(sub, changes, reply_markup=keyboard_markup,
+            disable_web_page_preview=True)
+    
+    # Logging
+    log_message = f"Success! Resources used: {health()}\
+    \nDownload status: {downloads_status}"
+    await bot.send_message(LOGGING_ID, log_message)
+    logger.info(log_message)
+    
     gc.collect()
     await asyncio.sleep(1200)
 
 
 @logger.catch
 def main():
-    logger.add(LOGS_PATH, format="{time} {level} {message}", retention="14 days"
-              , serialize=True)
+    logger.add(LOGS_PATH, format="{time} {level} {message}", serialize=True)
 
-
-    @dp.message_handler(commands=['start'])
+    @dp.message_handler(commands=['start', 'help', 'settings'])
     async def start_message(message: types.Message):
-        await message.answer(START_MSG, reply_markup=keyboard_markup)
-
-
-    @dp.message_handler(commands=['help'])
-    async def help_message(message: types.Message):
-        await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
+        await message.answer(START_MSG, reply_markup=keyboard_markup,
+        disable_web_page_preview=True)
 
 
     @dp.message_handler(commands=['reboot'])
     async def reboot_message(message: types.Message):
-        await bot.send_message(1631744908, "Server will reboot!")
+        await bot.send_message(LOGGING_ID, "Server will reboot!")
         os.system("reboot")
 
 
     @dp.message_handler(commands=['health'])
     async def health_message(message: types.Message):
-        await bot.send_message(1631744908, health())
+        await bot.send_message(LOGGING_ID, health())
 
 
     @dp.message_handler(commands=['monitor'])
     async def monitor_message(message: types.Message):
-        await bot.send_message(1631744908, "Monitoring launched!")
+        await bot.send_message(LOGGING_ID, "Monitoring launched!")
+        logger.info("Monitoring launched!")
         while True:
             try:
                 await monitor()
             except:
-                await bot.send_message(1631744908, 
-                f"FAILED! Resources used: {health()}")
+                log_message = f"FAILED! Resources used: {health()}"
+                logger.info(log_message)
+                await bot.send_message(LOGGING_ID, log_message)
                 await asyncio.sleep(60)
                 gc.collect()
         # else:
@@ -147,10 +138,12 @@ def main():
             with open(SUBS_DB, "a", encoding="utf-8") as subs_file:
                 subs_file.write(new_sub)            
             await message.answer(SUBSCRIBE_MSG, reply_markup=keyboard_markup)
-            await bot.send_message(1631744908, 
-            f"New subscriber! \nid: {message['from']['id']}\
-            \nnick: {message['from']['username']}\
-            \n Current list: {subs_list}")
+            
+            # Logging
+            log_message = f"New subscriber! \nid: {message['from']['id']}\
+            \nnick: {message['from']['username']}\n Current list: {subs_list}"
+            logger.info(log_message)
+            await bot.send_message(LOGGING_ID, log_message)
 
 
     @dp.message_handler(lambda message: message["text"] == '🔕 Отписаться')
@@ -164,7 +157,7 @@ def main():
             with open(SUBS_DB, "w", encoding="utf-8") as subs_file:
                 subs_file.writelines(subs_list)
             await message.answer(UNSUBSCRIBE_MSG, reply_markup=keyboard_markup)
-            await bot.send_message(1631744908, 
+            await bot.send_message(LOGGING_ID, 
             f"Subscriber removed! \nid: {message['from']['id']}\
             \nnick: {message['from']['username']}\
             \n Current list: {subs_list}")
@@ -174,12 +167,8 @@ def main():
 
     @dp.message_handler(lambda message: message["text"] =="💡 Как это работает")
     async def how_it_works(message: types.Message):
-        await message.answer(START_MSG, reply_markup=keyboard_markup)
-
-
-    @dp.message_handler(lambda message: message["text"] == "🤓 Контакты")
-    async def contact_us(message: types.Message):
-        await message.answer(CONTACTS_MSG, reply_markup=keyboard_markup)
+        await message.answer(START_MSG, reply_markup=keyboard_markup, 
+        disable_web_page_preview=True)
 
 
     @dp.message_handler()
@@ -205,12 +194,12 @@ def main():
             f"\nВремя обработки: {time.time() - start:.3f} секунд")
 
         # Logging
-        log_entry = f"\nFrom id: {message['from']['id']}\
+        log_message = f"\nFrom id: {message['from']['id']}\
                       \nFrom nick: {message['from']['username']}\
                       \nText: {message['text']}\
                       \nNumber of detected inoagents: {len(results)}"
-        logger.info(log_entry)
-        await bot.send_message(91675683, log_entry)
+        logger.info(log_message)
+        await bot.send_message(LOGGING_ID, log_message)
 
         # Garbage collection
         gc.collect()
