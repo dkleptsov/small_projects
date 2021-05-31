@@ -162,3 +162,7 @@ insta_download/therock/
 inoagent_detection/signatures/~$идумывание паттернов.docx
 basics/async/.vscode/
 inoagent_detection/monitoring/subscribers.txt
+web_scraping/replied.txt
+web_scraping/not_replied.txt
+web_scraping/send_errors_1.txt
+web_scraping/replied_1.txt
