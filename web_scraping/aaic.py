@@ -84,7 +84,7 @@ def check_replies() -> None:
     sleep(SLEEP_TIME*2)
     # Собираем инфу
     errors = 0
-    for i in range (2, 2000):
+    for i in range (1629, 2000):
         aaic_url = f"https://aaic2021.b2match.io/participants/{i}"
         driver.get(aaic_url)
         sleep(SLEEP_TIME*2)
@@ -93,7 +93,7 @@ def check_replies() -> None:
                 driver.find_element_by_xpath("/html/body/section/main/section/div/div[1]/div/div[3]/a").click()
                 sleep(SLEEP_TIME*3)
 
-                reply = driver.find_elements_by_xpath("/html/body/section/main/div[2]/div/div[2]/div[2]/div/div[2]/div/p[1]")
+                reply = driver.find_elements_by_xpath("/html/body/section/main/div[2]/div/div[2]/div[2]/div/div[3]/div/p[1]")
                 if len(reply) > 0:
                     print(f"REPLIED: {aaic_url}")
                     with open('replied.txt', 'a', encoding="utf-8") as writer:
@@ -125,7 +125,7 @@ def check_replies() -> None:
 
 def main() -> None:
     # send_messages_by_list()
-    # check_replies()
+    check_replies()
 
 
 if __name__ == "__main__":
