@@ -6,10 +6,10 @@ from loguru import logger
 import gc
 import youtube_dl
 
-LOGS_PATH = r"D:/repos/small_projects/yt_downloader/logs/yt_mp3_download.log"
-MUSIC_PATH = r"D:/OneDrive/Media/NEW MUSIC/yt_bot/"
+LOGS_PATH = "/mnt/data/tmp/yt_mp3_download.log"
+MUSIC_PATH = "/mnt/data/tmp/"
 
-BOT_TOKEN = os.getenv("TESTFLIGHT_BOT") #os.getenv("YT_MP3_DOWNLOAD_BOT_TOKEN")
+BOT_TOKEN = os.getenv("TESTFLIGHT_BOT")
 START_MSG = "This bot downloads mp3 from youtube videos. 🤩"
 AWAIT_MSG = "Your message has been received. Please wait for an answer. 🤗"
 
@@ -77,9 +77,9 @@ def main():
             await bot.send_message(91675683, log_entry)
 
             # Deleting unwanted music my id 91675683
-            mp3_exists =os.path.exists(f"{MUSIC_PATH}{video_info['title']}.mp3")
-            if message['from']['id'] != 91675683 and mp3_exists:
-                os.remove(f"{MUSIC_PATH}{video_info['title']}.mp3")
+            # mp3_exists =os.path.exists(f"{MUSIC_PATH}{video_info['title']}.mp3")
+            # if message['from']['id'] != 91675683 and mp3_exists:
+            #     os.remove(f"{MUSIC_PATH}{video_info['title']}.mp3")
 
             # Garbage collection
             gc.collect()
